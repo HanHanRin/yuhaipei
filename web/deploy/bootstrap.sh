@@ -59,10 +59,11 @@ fi
 echo "    node $(node -v) / npm $(npm -v)"
 
 step "配置 npm 镜像源"
+# 只设 registry。sharp 0.34 起改用 optional dependencies 分发预编译包
+# （@img/sharp-linux-x64），不再在安装时单独下载二进制，
+# 所以走 registry 镜像就够了，不需要额外的 sharp_binary_host——
+# 而且 npm 11 会直接拒绝这类未知配置项。
 npm config set registry "$NPM_MIRROR" --global
-# sharp 的预编译二进制也走镜像，否则装依赖时会卡在下载上
-npm config set sharp_binary_host "${NPM_MIRROR}/-/binary/sharp" --global
-npm config set sharp_libvips_binary_host "${NPM_MIRROR}/-/binary/sharp-libvips" --global
 
 if ! command -v pm2 >/dev/null 2>&1; then
   step "安装 PM2"
