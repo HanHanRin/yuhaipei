@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {
   type CSSProperties,
   type PointerEvent as ReactPointerEvent,
@@ -18,12 +19,16 @@ const scenes = [
   { id: "contact", label: "联系", short: "04", color: "#14140f" },
 ] as const;
 
+// width / height 是图片的原始像素尺寸，next/image 靠它预留空间避免布局抖动；
+// 实际显示尺寸由 CSS（object-fit: cover）决定。
 const projects = [
   {
     number: "01",
     title: "元规",
     subtitle: "专业规范问答工作台",
     image: "/canon-home.png",
+    width: 1440,
+    height: 1000,
     note: "知识检索 · 引用溯源 · 专家流程",
     className: "project-wide",
   },
@@ -32,6 +37,8 @@ const projects = [
     title: "行业景气研究",
     subtitle: "对公智能营销工作台",
     image: "/cmb-dashboard.png",
+    width: 1440,
+    height: 1000,
     note: "八维研判 · 机会雷达 · 报告生成",
     className: "",
   },
@@ -40,18 +47,59 @@ const projects = [
     title: "搭小财",
     subtitle: "对话式消费洞察助手",
     image: "/xiaocai-hero.png",
+    width: 741,
+    height: 778,
     note: "自然语言记账 · 周报 · 目标陪伴",
     className: "",
   },
 ] as const;
 
 const gallery = [
-  { title: "城市研究", label: "PLANNING", image: "/planning-works.png" },
-  { title: "现场观察", label: "FIELD NOTE", image: "/opc-site-1.jpg" },
-  { title: "规范产品", label: "PRODUCT", image: "/canon-home.png" },
-  { title: "行业洞察", label: "RESEARCH", image: "/cmb-dashboard.png" },
-  { title: "学术表达", label: "POSTER", image: "/academic-poster.png" },
+  {
+    title: "城市研究",
+    label: "PLANNING",
+    image: "/planning-works.jpg",
+    width: 1600,
+    height: 1131,
+  },
+  {
+    title: "现场观察",
+    label: "FIELD NOTE",
+    image: "/opc-site-1.jpg",
+    width: 1080,
+    height: 720,
+  },
+  {
+    title: "规范产品",
+    label: "PRODUCT",
+    image: "/canon-home.png",
+    width: 1440,
+    height: 1000,
+  },
+  {
+    title: "行业洞察",
+    label: "RESEARCH",
+    image: "/cmb-dashboard.png",
+    width: 1440,
+    height: 1000,
+  },
+  {
+    title: "学术表达",
+    label: "POSTER",
+    image: "/academic-poster.jpg",
+    width: 1050,
+    height: 1400,
+  },
 ] as const;
+
+// 部署到 GitHub Pages 项目页时站点挂在 /yuhaipei 下，站内直链都要带这个前缀。
+// 注意两个不会自动加前缀的地方：
+//   1. 手写的 <a href="/...">
+//   2. next/image 在 unoptimized 模式下（静态导出必须开）输出的就是原始 src
+// 部署到自己的域名根目录时 BASE_PATH 为空串，下面的拼接是无副作用的。
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+const asset = (path: string) => `${BASE_PATH}${path}`;
+const RESUME_PATH = asset("/resume/余海沛_AI产品经理简历带照片_v1.2.pdf");
 
 type CurtainState = {
   phase: "idle" | "cover" | "reveal";
@@ -235,7 +283,7 @@ export default function PortfolioDemo() {
     >
       <header className="topline">
         <button className="wordmark" onClick={() => goTo(0)}>
-          ZX<span>·</span>LAB
+          YU<span>·</span>HAIPEI
         </button>
         <div className="telemetry" aria-label="所在地与时间">
           <span className="live-dot" />
@@ -266,8 +314,8 @@ export default function PortfolioDemo() {
           <div className="hero-content">
             <p className="eyebrow reveal reveal-1">PORTFOLIO / 2026</p>
             <h1 className="reveal reveal-2">
-              张醒
-              <span>ZHANG XING</span>
+              余海沛
+              <span>YU HAIPEI</span>
             </h1>
             <p className="hero-claim reveal reveal-3">
               FROM COMPLEXITY
@@ -275,7 +323,7 @@ export default function PortfolioDemo() {
               TO CLARITY.
             </p>
             <div className="hero-meta reveal reveal-4">
-              <p>AI 产品 · 研究 · 体验设计</p>
+              <p>AI 产品经理 · 大模型应用 · AI Workflow</p>
               <button onClick={() => goTo(2)}>查看代表作品 ↘</button>
             </div>
           </div>
@@ -294,23 +342,25 @@ export default function PortfolioDemo() {
           <h2 className="giant-title">ABOUT</h2>
           <div className="profile-layout">
             <article className="profile-intro reveal reveal-1">
-              <p className="intro-label">一个跨越规划、研究与 AI 产品的人</p>
+              <p className="intro-label">一个跨越城市规划、研究与 AI 产品的人</p>
               <h3>
                 我把复杂问题整理成
                 <em>可理解、可验证、可交付</em>
                 的产品。
               </h3>
               <p>
-                这个示例暂时使用虚构身份文字，重点展示信息层级、颜色切场和内容进入方式。
-                真正制作时，只需用你的经历和证据替换这里。
+                同济大学城市规划硕士在读。做过跨境电商 AI
+                客服工作流、街景语义多模态平台，也独立做完过一个垂类规范 RAG
+                助手的调研、评测与部署闭环。习惯把模糊的业务问题拆成可执行的流程、
+                可测量的指标，和经得起追问的证据。
               </p>
             </article>
             <div className="skill-ledger reveal reveal-2">
               {[
-                ["01", "产品定义", "需求洞察 / PRD / 原型"],
-                ["02", "AI 应用", "RAG / Agent / 评测"],
-                ["03", "研究能力", "访谈 / 分析 / 证据链"],
-                ["04", "全栈交付", "设计 / 前端 / 部署"],
+                ["01", "产品定义", "用户调研 / PRD / 原型 / 指标设计"],
+                ["02", "AI 应用", "RAG / Agent / Prompt / AI Workflow"],
+                ["03", "质量闭环", "模型评测 / Bad Case 归因"],
+                ["04", "数据与工程", "Python / SQL / 部署上线"],
               ].map(([number, title, detail]) => (
                 <div className="skill-row" key={number}>
                   <span>{number}</span>
@@ -340,7 +390,14 @@ export default function PortfolioDemo() {
                 }
               >
                 <div className="project-visual">
-                  <img src={project.image} alt={`${project.title}项目界面`} />
+                  <Image
+                    src={asset(project.image)}
+                    alt={`${project.title}项目界面`}
+                    width={project.width}
+                    height={project.height}
+                    sizes="(max-width: 680px) 90vw, (max-width: 980px) 45vw, 33vw"
+                    priority={index === 0}
+                  />
                   <span className="project-number">{project.number}</span>
                   <span className="project-open">OPEN ↗</span>
                 </div>
@@ -381,7 +438,13 @@ export default function PortfolioDemo() {
                   onClick={() => setActiveCard(index)}
                   aria-label={`查看${item.title}`}
                 >
-                  <img src={item.image} alt={item.title} />
+                  <Image
+                    src={asset(item.image)}
+                    alt={item.title}
+                    width={item.width}
+                    height={item.height}
+                    sizes="(max-width: 680px) 62vw, 340px"
+                  />
                   <span className="archive-label">{item.label}</span>
                   <strong>{item.title}</strong>
                   <small>{String(index + 1).padStart(2, "0")} / 05</small>
@@ -433,28 +496,6 @@ export default function PortfolioDemo() {
             </p>
             <div className="contact-links">
               <div className="contact-row">
-                <span>TEL/WeChat</span>
-                <a
-                  className="contact-value"
-                  href="weixin://dl/add"
-                  onClick={() =>
-                    copyContact("18437088052", "号码已复制，请在微信中粘贴")
-                  }
-                >
-                  18437088052
-                </a>
-                <button
-                  className="contact-action copy"
-                  onClick={() =>
-                    copyContact("18437088052", "电话号码已复制")
-                  }
-                  aria-label="复制电话号码"
-                  title="复制电话号码"
-                >
-                  复制
-                </button>
-              </div>
-              <div className="contact-row">
                 <span>EMAIL</span>
                 <a className="contact-value" href="mailto:2352202496@qq.com">
                   2352202496@qq.com
@@ -470,16 +511,12 @@ export default function PortfolioDemo() {
               </div>
               <div className="contact-row">
                 <span>RESUME</span>
-                <a
-                  className="contact-value"
-                  href="/resume/余海沛_AI产品经理简历带照片_v1.2.pdf"
-                  download
-                >
+                <a className="contact-value" href={RESUME_PATH} download>
                   下载个人简历
                 </a>
                 <a
                   className="contact-action"
-                  href="/resume/余海沛_AI产品经理简历带照片_v1.2.pdf"
+                  href={RESUME_PATH}
                   download
                   aria-label="下载个人简历"
                 >
@@ -507,6 +544,9 @@ export default function PortfolioDemo() {
                 </a>
               </div>
             </div>
+            <p className="contact-note">
+              手机号与微信不直接公开，邮件联系后由本人确认交换。
+            </p>
             <p className={`copy-toast ${copyNotice ? "visible" : ""}`} role="status">
               {copyNotice}
             </p>
