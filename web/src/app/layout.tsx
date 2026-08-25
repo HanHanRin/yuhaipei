@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import AiAvatar from "@/components/ai-avatar/ai-avatar";
 import "./globals.css";
 
 // metadata 里的 icons 不会自动带 basePath，部署到子路径时要自己拼。
@@ -28,7 +29,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN">
-      <body>{children}</body>
+      <body>
+        {children}
+        <AiAvatar />
+      </body>
     </html>
   );
 }

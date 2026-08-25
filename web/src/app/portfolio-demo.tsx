@@ -167,12 +167,23 @@ export default function PortfolioDemo() {
   );
 
   useEffect(() => {
+    // 分身对话框 / 输入框内的滚轮与按键不要劫持成切幕
+    const inAiAvatar = (target: EventTarget | null) =>
+      target instanceof Element &&
+      Boolean(
+        target.closest(
+          ".ai-avatar-panel, .ai-avatar-hint, .ai-avatar-petbtn",
+        ),
+      );
+
     const onWheel = (event: WheelEvent) => {
+      if (inAiAvatar(event.target)) return;
       if (Math.abs(event.deltaY) < 24) return;
       event.preventDefault();
       goTo(current + (event.deltaY > 0 ? 1 : -1));
     };
     const onKeyDown = (event: KeyboardEvent) => {
+      if (inAiAvatar(event.target)) return;
       if (["ArrowDown", "PageDown", " "].includes(event.key)) {
         event.preventDefault();
         goTo(current + 1);

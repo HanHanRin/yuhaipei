@@ -34,6 +34,10 @@ jobs:
 
       - run: npm ci
 
+      # output: export 不能带 App Router API；本地/Node 部署才需要 /api/chat
+      - name: Exclude API routes for static export
+        run: mv src/app/api /tmp/yuhaipei-api-skip
+
       - name: Build static export
         run: npm run build
         env:

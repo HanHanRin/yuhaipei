@@ -4,11 +4,13 @@
   --paper: #f3efe5;
   --paper-deep: #e4dece;
   --ink: #151510;
+  --ink-2: #67665f;
   --muted: #67665f;
   --olive: #44500f;
   --olive-light: #d9e2a5;
   --rust: #b85132;
   --rust-dark: #83351f;
+  --accent: var(--rust);
   --warm: #f1eadb;
   --pointer-x: 50vw;
   --pointer-y: 50vh;
@@ -1416,5 +1418,591 @@ main {
 
   .scene-curtain {
     display: none;
+  }
+}
+
+/* ===============================================================
+   临时借用自 ChenYanjun-hub/cyj-personal-web（外观后续可替换）。
+   AI 数字分身 · 全站悬浮组件
+   ---------------------------------------------------------------
+   右下角泡泡按钮 + 点击展开 chat 面板。z-index 100 浮在所有幕之上。
+   设计延续整站：accent 用在泡泡 + 强调按钮；面板黑白单色 + 圆角 + 阴影。
+   =============================================================== */
+
+/* --- 悬浮吉祥物按钮 --- */
+.ai-avatar-petbtn {
+  position: fixed;
+  right: clamp(12px, 3vw, 24px);
+  /* + safe-area-inset-bottom：viewport-fit=cover 后内容延伸进 Home Indicator 区域，
+     这里补回内边距避免按钮被遮挡（非刘海设备 env() = 0，不受影响） */
+  bottom: calc(clamp(12px, 3vw, 22px) + env(safe-area-inset-bottom, 0px));
+  z-index: 100;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* --- 首访引导气泡（打字机三句循环 · 可关闭） --- */
+.ai-avatar-hint {
+  position: fixed;
+  right: clamp(12px, 3vw, 24px);
+  /* + safe-area-inset-bottom：随 .ai-avatar-petbtn 一起下移，保持锚定关系 */
+  bottom: calc(clamp(98px, 16vw, 118px) + env(safe-area-inset-bottom, 0px));
+  z-index: 99;
+  white-space: nowrap;
+  padding: 11px 14px;
+  background: #fbfbfd;
+  color: #1d1d1f;
+  border: 2px solid #4b4b4b;
+  border-radius: 0;
+  box-shadow: 4px 4px 0 0 rgba(40, 40, 40, 0.16);
+  font-size: 13px;
+  line-height: 1.55;
+  cursor: pointer;
+  user-select: none;
+  animation: ai-hint-in 0.42s cubic-bezier(0.16, 0.84, 0.3, 1) both;
+}
+.ai-avatar-hint::after {
+  /* 指向吉祥物的像素小尾巴（白底 + 深灰框两边） */
+  content: "";
+  position: absolute;
+  right: 24px;
+  bottom: -8px;
+  width: 12px;
+  height: 12px;
+  background: #fbfbfd;
+  border-right: 2px solid #4b4b4b;
+  border-bottom: 2px solid #4b4b4b;
+  transform: rotate(45deg);
+}
+.ai-avatar-hint-text {
+  position: relative;
+}
+.ai-avatar-hint-caret {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  background: var(--accent);
+  vertical-align: -0.12em;
+  animation: ai-hint-blink 1s steps(1) infinite;
+}
+.ai-avatar-hint-close {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  z-index: 1;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  background: #fbfbfd;
+  border: 2px solid #4b4b4b;
+  border-radius: 0;
+  color: #1d1d1f;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 0 rgba(40, 40, 40, 0.16);
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.ai-avatar-hint-close:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+@keyframes ai-hint-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes ai-hint-blink {
+  50% {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ai-avatar-hint {
+    animation: none;
+  }
+  .ai-avatar-hint-caret {
+    animation: none;
+  }
+}
+
+/* --- 吉祥物 sprite + 影子 --- */
+.claude-pet {
+  position: relative;
+  display: inline-block;
+}
+.claude-pet-sprite {
+  display: block;
+  width: auto;
+  height: clamp(74px, 9vw, 86px);
+  transform-origin: 50% 100%;
+  will-change: transform;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.claude-pet-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: -3px;
+  width: 58%;
+  height: 9px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(60, 40, 30, 0.28),
+    transparent 70%
+  );
+  z-index: -1;
+}
+
+/* idle 待机：浮动 + 极轻呼吸 */
+.claude-pet.state-idle .claude-pet-sprite {
+  animation: cp-idle 4.2s ease-in-out infinite;
+}
+.claude-pet.state-idle .claude-pet-shadow {
+  animation: cp-idle-sh 4.2s ease-in-out infinite;
+}
+@keyframes cp-idle {
+  0%,
+  100% {
+    transform: translateY(0) scale(1, 1);
+  }
+  50% {
+    transform: translateY(-4px) scale(0.998, 1.004);
+  }
+}
+@keyframes cp-idle-sh {
+  0%,
+  100% {
+    transform: translateX(-50%) scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translateX(-50%) scale(0.93);
+    opacity: 0.65;
+  }
+}
+
+/* hello 打招呼（hover）：弹起 + 左右摇摆 */
+.claude-pet.state-hello .claude-pet-sprite {
+  animation: cp-hello 1.6s ease-in-out infinite;
+}
+@keyframes cp-hello {
+  0% {
+    transform: translateY(0) rotate(0) scale(1, 1);
+  }
+  16% {
+    transform: translateY(-7px) scale(0.99, 1.01);
+  }
+  32% {
+    transform: translateY(0) scale(1.015, 0.985);
+  }
+  48% {
+    transform: translateY(-3px) rotate(-4deg);
+  }
+  64% {
+    transform: translateY(0) rotate(4deg);
+  }
+  80% {
+    transform: rotate(-2deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+}
+
+/* talk 说话（AI 回答中）：小幅弹动 */
+.claude-pet.state-talk .claude-pet-sprite {
+  animation: cp-talk 0.5s ease-in-out infinite;
+}
+@keyframes cp-talk {
+  0%,
+  100% {
+    transform: translateY(0) scale(1, 1);
+  }
+  50% {
+    transform: translateY(-2px) scale(1.006, 0.994);
+  }
+}
+
+/* think 思考：歪头 + 慢摆（保留备用） */
+.claude-pet.state-think .claude-pet-sprite {
+  animation: cp-think 4.6s ease-in-out infinite;
+  transform-origin: 50% 92%;
+}
+@keyframes cp-think {
+  0%,
+  100% {
+    transform: rotate(-5deg) translateY(0);
+  }
+  50% {
+    transform: rotate(-7deg) translateY(-2px);
+  }
+}
+
+/* sleep 睡觉：下沉 + 慢呼吸（保留备用） */
+.claude-pet.state-sleep .claude-pet-sprite {
+  animation: cp-sleep 5.6s ease-in-out infinite;
+}
+@keyframes cp-sleep {
+  0%,
+  100% {
+    transform: translateY(2px) scale(1.008, 0.992);
+  }
+  50% {
+    transform: translateY(0) scale(1, 1);
+  }
+}
+
+/* error 出错（请求失败）：抖动 + 去色 */
+.claude-pet.state-error .claude-pet-sprite {
+  animation: cp-err 0.62s ease-in-out infinite;
+  filter: saturate(0.32) brightness(0.95);
+}
+@keyframes cp-err {
+  0%,
+  100% {
+    transform: translateX(0) rotate(0);
+  }
+  15% {
+    transform: translateX(-3px) rotate(-1.5deg);
+  }
+  30% {
+    transform: translateX(3px) rotate(1.5deg);
+  }
+  45% {
+    transform: translateX(-2px) rotate(-1deg);
+  }
+  60% {
+    transform: translateX(2px) rotate(1deg);
+  }
+  78% {
+    transform: translateX(-1px) rotate(0);
+  }
+}
+
+/* --- Chat 面板 --- */
+.ai-avatar-panel {
+  position: fixed;
+  right: clamp(16px, 3vw, 28px);
+  bottom: calc(86px + clamp(12px, 3vw, 22px) + 12px);
+  z-index: 100;
+  width: 380px;
+  max-width: calc(100vw - 32px);
+  height: min(620px, calc(100vh - 140px));
+  background: var(--paper);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(29, 29, 31, 0.18),
+    0 6px 18px rgba(29, 29, 31, 0.08);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: ai-avatar-pop 0.25s cubic-bezier(0.16, 0.84, 0.3, 1) both;
+}
+@keyframes ai-avatar-pop {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* --- 顶部 --- */
+.ai-avatar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+  border-bottom: 1px solid rgba(29, 29, 31, 0.08);
+}
+.ai-avatar-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.ai-avatar-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: 0.01em;
+}
+.ai-avatar-tag {
+  font-size: 11px;
+  color: var(--ink-2);
+  letter-spacing: 0.02em;
+}
+.ai-avatar-close {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.ai-avatar-close:hover {
+  background: rgba(29, 29, 31, 0.06);
+  color: var(--ink);
+}
+
+/* --- 消息列表 --- */
+.ai-avatar-list {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ai-avatar-msg {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 100%;
+}
+.ai-avatar-msg-user {
+  align-items: flex-end;
+}
+.ai-avatar-msg-assistant {
+  align-items: flex-start;
+}
+.ai-avatar-msg-img {
+  max-width: 200px;
+  max-height: 240px;
+  border-radius: 12px;
+  border: 1px solid rgba(29, 29, 31, 0.12);
+  object-fit: cover;
+  display: block;
+}
+.ai-avatar-msg-text {
+  max-width: 84%;
+  padding: 9px 13px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+.ai-avatar-msg-user .ai-avatar-msg-text {
+  background: var(--ink);
+  color: var(--paper);
+  border-bottom-right-radius: 4px;
+}
+.ai-avatar-msg-assistant .ai-avatar-msg-text {
+  background: rgba(29, 29, 31, 0.06);
+  color: var(--ink);
+  border-bottom-left-radius: 4px;
+}
+
+/* 错误横幅 */
+.ai-avatar-error {
+  margin-top: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--accent);
+  background: rgba(216, 85, 46, 0.08);
+  border-radius: 8px;
+  text-align: center;
+}
+
+/* --- 预设问题区 --- */
+.ai-avatar-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 18px 12px;
+}
+.ai-avatar-preset {
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 100px;
+  border: 1px solid rgba(29, 29, 31, 0.18);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+.ai-avatar-preset:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.ai-avatar-preset:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* --- 输入区 --- */
+.ai-avatar-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 12px 18px 16px;
+  border-top: 1px solid rgba(29, 29, 31, 0.08);
+  background: var(--paper);
+}
+.ai-avatar-input {
+  flex: 1;
+  resize: none;
+  border: 1px solid rgba(29, 29, 31, 0.15);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  font-family: inherit;
+  color: var(--ink);
+  background: var(--paper);
+  transition: border-color 0.15s ease;
+  max-height: 140px;
+}
+.ai-avatar-input:focus {
+  outline: none;
+  border-color: var(--ink);
+}
+.ai-avatar-input:disabled {
+  background: rgba(29, 29, 31, 0.04);
+  cursor: not-allowed;
+}
+.ai-avatar-send {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+}
+.ai-avatar-send:hover:not(:disabled) {
+  transform: scale(1.05);
+}
+.ai-avatar-send:disabled {
+  background: rgba(29, 29, 31, 0.2);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* --- 上传 JD 图片 按钮（输入区左侧 ghost 图标） --- */
+.ai-avatar-upload {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(29, 29, 31, 0.15);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+.ai-avatar-upload:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.ai-avatar-upload:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* --- 待发送 JD 图片预览条 --- */
+.ai-avatar-attach {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  margin: 2px 18px 8px;
+  padding: 8px 10px;
+  background: rgba(216, 85, 46, 0.06);
+  border: 1px solid rgba(216, 85, 46, 0.22);
+  border-radius: 10px;
+}
+.ai-avatar-attach-img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid rgba(29, 29, 31, 0.12);
+  flex-shrink: 0;
+}
+.ai-avatar-attach-tip {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--ink-2);
+}
+.ai-avatar-attach-remove {
+  margin-left: auto;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border: none;
+  background: none;
+  color: var(--ink-2);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.ai-avatar-attach-remove:hover {
+  color: var(--accent);
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* --- 窄屏适配：面板占视口下半 --- */
+@media (max-width: 600px) {
+  .ai-avatar-panel {
+    right: 8px;
+    left: 8px;
+    width: auto;
+    max-width: none;
+    bottom: calc(80px + 8px + 12px);
+    height: min(560px, calc(100vh - 120px));
+  }
+}
+
+/* --- 动效偏好 --- */
+@media (prefers-reduced-motion: reduce) {
+  .ai-avatar-panel {
+    animation: none !important;
+  }
+  .ai-avatar-send {
+    transition: none;
+  }
+  /* 吉祥物保持静止（去色仍保留，作为出错的可读信号） */
+  .claude-pet-sprite,
+  .claude-pet-shadow {
+    animation: none !important;
   }
 }
