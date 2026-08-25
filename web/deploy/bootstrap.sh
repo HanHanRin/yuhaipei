@@ -46,11 +46,28 @@ node_ok() {
 }
 
 install_node() {
-  # latest-v22.x 是个稳定目录，里面只放该大版本的最新一个构建
-  local base="${NPM_MIRROR}/-/binary/node/latest-v22.x"
-  local tarball
-  tarball=$(curl -fsSL "$base/" \
-    | grep -o 'node-v22\.[0-9]*\.[0-9]*-linux-x64\.tar\.xz' | head -1)
+  # 注意：npmmirror 的 latest-v22.x 目录会列出很多历史版本，
+  # 用 head -1 会拿到最旧的 v22.0.0（这正是上次失败的原因）。
+  # 优先读版本索引取最新 v22，失败再对目录列表做版本排序。
+  local ver="" tarball="" url=""
+  ver=$(curl -fsSL "https://cdn.npmmirror.com/binaries/node/index.json" \
+    | python3 -c '
+import sys, json
+vers = [x["version"] for x in json.load(sys.stdin) if x["version"].startswith("v22.")]
+print(sorted(vers, key=lambda v: [int(p) for p in v[1:].split(".")])[-1])
+' 2>/dev/null || true)
+
+  if [ -n "$ver" ]; then
+    tarball="node-${ver}-linux-x64.tar.xz"
+    url="https://cdn.npmmirror.com/binaries/node/${ver}/${tarball}"
+  else
+    local base="${NPM_MIRROR}/-/binary/node/latest-v22.x"
+    tarball=$(curl -fsSL "$base/" \
+      | grep -oE 'node-v22\.[0-9]+\.[0-9]+-linux-x64\.tar\.xz' \
+      | sort -t. -k2,2n -k3,3n \
+      | tail -1)
+    url="${base}/${tarball}"
+  fi
 
   if [ -z "$tarball" ]; then
     echo "    镜像取版本号失败，回退 NodeSource"
@@ -60,16 +77,20 @@ install_node() {
   fi
 
   echo "    ${tarball}"
-  curl -fsSL "${base}/${tarball}" -o /tmp/node.tar.xz
+  curl -fsSL "$url" -o /tmp/node.tar.xz
   rm -rf /usr/local/lib/nodejs
   mkdir -p /usr/local/lib/nodejs
   tar -xJf /tmp/node.tar.xz -C /usr/local/lib/nodejs --strip-components=1
   rm -f /tmp/node.tar.xz
-  # 装到 /usr/local/bin，它在 PATH 里排在系统预装的 /usr/bin 之前
+  # 覆盖 /usr/local/bin；并尽量盖掉系统预装的 /usr/bin/node（阿里云镜像常有旧版）
   ln -sf /usr/local/lib/nodejs/bin/node /usr/local/bin/node
   ln -sf /usr/local/lib/nodejs/bin/npm /usr/local/bin/npm
   ln -sf /usr/local/lib/nodejs/bin/npx /usr/local/bin/npx
+  ln -sf /usr/local/lib/nodejs/bin/node /usr/bin/node
+  ln -sf /usr/local/lib/nodejs/bin/npm /usr/bin/npm
+  ln -sf /usr/local/lib/nodejs/bin/npx /usr/bin/npx
   hash -r
+  export PATH="/usr/local/bin:/usr/bin:$PATH"
 }
 
 NODE_REINSTALLED=0
