@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // PM2 配置必须用 CommonJS require
+    "deploy/**",
   ]),
 ]);
 

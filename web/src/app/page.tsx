@@ -1,5 +1,5 @@
-import PortfolioDemo from "./portfolio-demo";
+import PortfolioShell from "@/components/portfolio/PortfolioShell";
 
 export default function Home() {
-  return <PortfolioDemo />;
+  return <PortfolioShell />;
 }
