@@ -216,6 +216,15 @@ export const INTERNSHIPS: readonly Internship[] = [
           "输出报告经专家评审，与现场实地踏勘结论符合度超 85%",
           "相关成果发表论文",
         ],
+        mediaVariant: "poster",
+        mediaCredit: "学术墙报 ·《大模型赋能的街区尺度街景语义智能分析研究》· 2026 中国城市规划年会",
+        media: [
+          {
+            src: "/portfolio/tongji/streetscape-poster.webp",
+            alt: "大模型赋能的街区尺度街景语义智能分析研究学术墙报",
+            label: "学术墙报",
+          },
+        ],
       },
     ],
   },

@@ -16,6 +16,7 @@ export type EditorialMediaVariant =
   | "citations"
   | "phones"
   | "flows"
+  | "poster"
   | "company";
 
 type Props = {
@@ -32,6 +33,7 @@ const IMAGE_SIZES: Record<EditorialMediaVariant, string> = {
   citations: "(max-width: 860px) 82vw, 42vw",
   phones: "(max-width: 860px) 34vw, 14vw",
   flows: "(max-width: 860px) 86vw, 46vw",
+  poster: "(max-width: 860px) 70vw, 30vw",
   company: "(max-width: 860px) 82vw, 28vw",
 };
 

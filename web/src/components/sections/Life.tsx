@@ -1,15 +1,50 @@
 "use client";
 
+import Image from "next/image";
+import { asset } from "@/components/portfolio/data";
+
 type Props = {
   slide: number;
 };
 
-const LIFE = [
+type Feature = {
+  src: string;
+  alt: string;
+  caption: string;
+  /** 竖版书影用 portrait，横版现场照用 landscape */
+  shape: "portrait" | "landscape";
+  title: string;
+  meta?: string;
+  note: string[];
+};
+
+type LifeSlide = {
+  id: string;
+  label: string;
+  title: string;
+  hint: string;
+  feature?: Feature;
+  items: readonly string[];
+};
+
+const LIFE: readonly LifeSlide[] = [
   {
     id: "books",
     label: "BOOKSHELF",
     title: "书",
-    hint: "封面轨占位 · 后续补书单与封面",
+    hint: "从城市研究到 Agent 产品，读的是同一件事的两面",
+    feature: {
+      src: "/portfolio/life/book-multiagent.webp",
+      alt: "《多代理人模拟：原理及城市规划应用》书籍封面",
+      caption: "朱玮 编著 · 中国建筑工业出版社",
+      shape: "portrait",
+      title: "多代理人模拟：原理及城市规划应用",
+      meta: "MULTI-AGENT SIMULATION",
+      note: [
+        "这是我最喜欢的一本我的导师的著作。",
+        "它让我从 Agent 产品的角度思考城市人口流动的研究。",
+      ],
+    },
     items: ["城市研究", "产品方法", "叙事与认知"],
   },
   {
@@ -22,11 +57,20 @@ const LIFE = [
   {
     id: "photo",
     label: "OBSERVE",
-    title: "摄影",
-    hint: "影像占位 · 后续接入现场照片",
+    title: "现场",
+    hint: "去现场，见到把技术真正推向产业的人",
+    feature: {
+      src: "/portfolio/life/amd-lisa-su.webp",
+      alt: "在 AMD 开发者大会与 AMD 总裁苏姿丰的合影",
+      caption: "AMD 开发者大会现场合影",
+      shape: "landscape",
+      title: "与 AMD 总裁苏姿丰合影",
+      meta: "AMD DEVELOPER CONFERENCE",
+      note: ["参与 AMD 开发者大会时，与 AMD 总裁苏姿丰（Lisa Su）的合影。"],
+    },
     items: ["城市肌理", "现场笔记", "光影练习"],
   },
-] as const;
+];
 
 export default function Life({ slide }: Props) {
   return (
@@ -38,15 +82,46 @@ export default function Life({ slide }: Props) {
         {LIFE.map((item) => (
           <article className="sec-panel life-panel" key={item.id}>
             <div className="life-kicker">04 · LIFE / {item.label}</div>
-            <h2>{item.title}</h2>
-            <p className="life-hint">{item.hint}</p>
-            <ul className="life-cards">
-              {item.items.map((name) => (
-                <li key={name}>
-                  <span>{name}</span>
-                </li>
-              ))}
-            </ul>
+            {item.feature ? (
+              <div className="life-layout">
+                <div className="life-copy">
+                  <h2>{item.title}</h2>
+                  <p className="life-hint">{item.hint}</p>
+                  <div className="life-feature-text">
+                    {item.feature.meta ? (
+                      <span className="life-feature-meta">
+                        {item.feature.meta}
+                      </span>
+                    ) : null}
+                    <h3>{item.feature.title}</h3>
+                    {item.feature.note.map((line) => (
+                      <p key={line}>{line}</p>
+                    ))}
+                  </div>
+                </div>
+                <figure className={`life-figure is-${item.feature.shape}`}>
+                  <Image
+                    src={asset(item.feature.src)}
+                    alt={item.feature.alt}
+                    fill
+                    sizes="(max-width: 860px) 78vw, 34vw"
+                  />
+                  <figcaption>{item.feature.caption}</figcaption>
+                </figure>
+              </div>
+            ) : (
+              <>
+                <h2>{item.title}</h2>
+                <p className="life-hint">{item.hint}</p>
+                <ul className="life-cards">
+                  {item.items.map((name) => (
+                    <li key={name}>
+                      <span>{name}</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
           </article>
         ))}
       </div>
