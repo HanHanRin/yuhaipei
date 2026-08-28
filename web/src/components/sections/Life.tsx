@@ -23,8 +23,7 @@ type LifeSlide = {
   label: string;
   title: string;
   hint: string;
-  feature?: Feature;
-  items: readonly string[];
+  feature: Feature;
 };
 
 const LIFE: readonly LifeSlide[] = [
@@ -32,7 +31,7 @@ const LIFE: readonly LifeSlide[] = [
     id: "books",
     label: "BOOKSHELF",
     title: "书",
-    hint: "从城市研究到 Agent 产品，读的是同一件事的两面",
+    hint: "我读 Agent 的起点，不在 AI 圈，在一本城市规划教材里",
     feature: {
       src: "/portfolio/life/book-multiagent.webp",
       alt: "《多代理人模拟：原理及城市规划应用》书籍封面",
@@ -41,11 +40,10 @@ const LIFE: readonly LifeSlide[] = [
       title: "多代理人模拟：原理及城市规划应用",
       meta: "MULTI-AGENT SIMULATION",
       note: [
-        "这是我最喜欢的一本我的导师的著作。",
-        "它让我从 Agent 产品的角度思考城市人口流动的研究。",
+        "导师的这本书，是我最喜欢的一本。它让我第一次看见：个体各自决策，城市却会长出整体的秩序。",
+        "那时它叫多代理人模拟，如今我们叫它 Agent。从研究人口流动到设计 AI 产品，我做的其实是同一件事——把复杂系统拆成能被推演、也能被验证的单元。",
       ],
     },
-    items: ["城市研究", "产品方法", "叙事与认知"],
   },
   {
     id: "film",
@@ -64,13 +62,12 @@ const LIFE: readonly LifeSlide[] = [
         "他给的答案是——珍重活在世上的每一个日子。",
       ],
     },
-    items: ["叙事结构", "空间镜头", "人物弧线"],
   },
   {
     id: "photo",
     label: "OBSERVE",
     title: "现场",
-    hint: "去现场，见到把技术真正推向产业的人",
+    hint: "对 AI 的热情，最后都要落到「去现场看看」",
     feature: {
       src: "/portfolio/life/amd-lisa-su.webp",
       alt: "在 AMD 开发者大会与 AMD 总裁苏姿丰的合影",
@@ -78,9 +75,11 @@ const LIFE: readonly LifeSlide[] = [
       shape: "landscape",
       title: "与 AMD 总裁苏姿丰合影",
       meta: "AMD DEVELOPER CONFERENCE",
-      note: ["参与 AMD 开发者大会时，与 AMD 总裁苏姿丰（Lisa Su）的合影。"],
+      note: [
+        "参与 AMD 开发者大会时，与 AMD 总裁苏姿丰（Lisa Su）的合影。",
+        "我习惯往这样的现场跑：算力、模型与应用的真实进度，站在发布会和展台之间才看得清。做 AI 产品的人不该只在文档里想象技术——得知道这波浪潮此刻推到了哪里。",
+      ],
     },
-    items: ["城市肌理", "现场笔记", "光影练习"],
   },
 ];
 
@@ -94,46 +93,32 @@ export default function Life({ slide }: Props) {
         {LIFE.map((item) => (
           <article className="sec-panel life-panel" key={item.id}>
             <div className="life-kicker">04 · LIFE / {item.label}</div>
-            {item.feature ? (
-              <div className="life-layout">
-                <div className="life-copy">
-                  <h2>{item.title}</h2>
-                  <p className="life-hint">{item.hint}</p>
-                  <div className="life-feature-text">
-                    {item.feature.meta ? (
-                      <span className="life-feature-meta">
-                        {item.feature.meta}
-                      </span>
-                    ) : null}
-                    <h3>{item.feature.title}</h3>
-                    {item.feature.note.map((line) => (
-                      <p key={line}>{line}</p>
-                    ))}
-                  </div>
-                </div>
-                <figure className={`life-figure is-${item.feature.shape}`}>
-                  <Image
-                    src={asset(item.feature.src)}
-                    alt={item.feature.alt}
-                    fill
-                    sizes="(max-width: 860px) 78vw, 34vw"
-                  />
-                  <figcaption>{item.feature.caption}</figcaption>
-                </figure>
-              </div>
-            ) : (
-              <>
+            <div className="life-layout">
+              <div className="life-copy">
                 <h2>{item.title}</h2>
                 <p className="life-hint">{item.hint}</p>
-                <ul className="life-cards">
-                  {item.items.map((name) => (
-                    <li key={name}>
-                      <span>{name}</span>
-                    </li>
+                <div className="life-feature-text">
+                  {item.feature.meta ? (
+                    <span className="life-feature-meta">
+                      {item.feature.meta}
+                    </span>
+                  ) : null}
+                  <h3>{item.feature.title}</h3>
+                  {item.feature.note.map((line) => (
+                    <p key={line}>{line}</p>
                   ))}
-                </ul>
-              </>
-            )}
+                </div>
+              </div>
+              <figure className={`life-figure is-${item.feature.shape}`}>
+                <Image
+                  src={asset(item.feature.src)}
+                  alt={item.feature.alt}
+                  fill
+                  sizes="(max-width: 860px) 78vw, 34vw"
+                />
+                <figcaption>{item.feature.caption}</figcaption>
+              </figure>
+            </div>
           </article>
         ))}
       </div>

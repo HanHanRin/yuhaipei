@@ -3389,31 +3389,6 @@ main {
   opacity: 0.55;
 }
 
-.life-cards {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 180px));
-  gap: 12px;
-}
-
-.life-cards li {
-  aspect-ratio: 3 / 4;
-  border: 1px solid color-mix(in srgb, var(--ink) 22%, transparent);
-  display: grid;
-  place-items: end start;
-  padding: 14px;
-  background:
-    linear-gradient(160deg, color-mix(in srgb, var(--warm) 80%, transparent), transparent),
-    color-mix(in srgb, var(--paper-deep) 70%, transparent);
-}
-
-.life-cards span {
-  font-size: 13px;
-  letter-spacing: 0.04em;
-}
-
 .life-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
@@ -3618,10 +3593,6 @@ main {
   .resume-giant {
     font-size: 72px;
     top: 80px;
-  }
-
-  .life-cards {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .life-layout {
