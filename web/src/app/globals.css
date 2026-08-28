@@ -2773,10 +2773,14 @@ main {
 
 .intern-company-header {
   align-self: center;
+  position: relative;
+  z-index: 2;
 }
 
 .intern-project-copy {
   align-self: center;
+  position: relative;
+  z-index: 2;
   padding-left: clamp(24px, 4vw, 56px);
   border-left: 1px solid color-mix(in srgb, #f3efe5 24%, transparent);
 }
@@ -2784,6 +2788,8 @@ main {
 .intern-project-stage {
   min-width: 0;
   align-self: center;
+  position: relative;
+  z-index: 1;
 }
 
 .intern-layout.has-project-media .intern-project-copy {
@@ -2792,6 +2798,8 @@ main {
 }
 
 .intern-project-media {
+  position: relative;
+  z-index: 0;
   width: 100%;
   aspect-ratio: 16 / 10;
   max-height: min(36vh, 320px);
@@ -2800,6 +2808,8 @@ main {
 }
 
 .intern-company-media {
+  position: relative;
+  z-index: 0;
   width: min(100%, 410px);
   aspect-ratio: 16 / 9;
   max-height: min(32vh, 240px);
@@ -3259,11 +3269,18 @@ main {
   }
 
   .project-media-wrap {
+    position: relative;
+    z-index: 0;
     height: auto;
     aspect-ratio: 16 / 10;
     max-height: min(42vh, 320px);
     min-height: 240px;
     order: -1;
+  }
+
+  .project-copy {
+    position: relative;
+    z-index: 3;
   }
 }
 
@@ -3438,13 +3455,23 @@ main {
 
   .intern-panel {
     padding: 132px 6vw 118px;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
   .intern-layout {
     grid-template-columns: 1fr;
     align-content: start;
-    gap: 14px;
-    overflow: hidden;
+    gap: 12px;
+    height: auto;
+    min-height: 0;
+    /* 避免标题被 overflow 裁成「半截字」；叠压时靠 z-index + 半透明媒体让白字可读 */
+    overflow: visible;
+  }
+
+  .intern-company,
+  .intern-focus {
+    text-shadow: 0 1px 10px color-mix(in srgb, #44500f 85%, transparent);
   }
 
   .intern-company-header {
@@ -3452,6 +3479,7 @@ main {
     grid-template-columns: 1fr auto;
     align-items: baseline;
     column-gap: 16px;
+    z-index: 3;
   }
 
   .intern-kicker,
@@ -3483,23 +3511,40 @@ main {
   .intern-company-media {
     width: 100%;
     aspect-ratio: 16 / 9;
-    max-height: min(40vh, 280px);
+    max-height: min(28vh, 200px);
     height: auto;
     margin-top: 8px;
+    z-index: 0;
+    opacity: 0.5;
   }
 
   .intern-project-stage {
     min-height: 0;
-    overflow: hidden;
+    overflow: visible;
+    z-index: 1;
   }
 
   .intern-project-media {
     width: 100%;
     aspect-ratio: 16 / 10;
-    max-height: min(36vh, 260px);
-    min-height: 200px;
+    max-height: min(26vh, 200px);
+    min-height: 140px;
     height: auto;
     margin-bottom: 10px;
+    z-index: 0;
+    /* 若与标题叠压：图在下层且半透明，白字仍可辨认 */
+    opacity: 0.48;
+  }
+
+  .intern-project-media .editorial-media-item {
+    background: transparent;
+  }
+
+  .intern-project-copy {
+    z-index: 3;
+    padding: 18px 0 0;
+    border-top: 1px solid color-mix(in srgb, #f3efe5 24%, transparent);
+    border-left: 0;
   }
 
   .editorial-media--company .editorial-media-grid {
@@ -3512,12 +3557,6 @@ main {
       color-mix(in srgb, var(--media-fade) 55%, transparent),
       transparent 22%
     );
-  }
-
-  .intern-project-copy {
-    padding: 18px 0 0;
-    border-top: 1px solid color-mix(in srgb, #f3efe5 24%, transparent);
-    border-left: 0;
   }
 
   .intern-project-meta {
