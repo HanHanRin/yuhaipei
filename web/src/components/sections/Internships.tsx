@@ -141,24 +141,24 @@ export const INTERNSHIPS: readonly Internship[] = [
           "检索准确率提升至 0.521，相对提升约 71%",
         ],
         mediaVariant: "citations",
-        mediaCredit: "产品原型 · 引用、原文与质量评测",
+        mediaCredit: "产品原型 · 引用式回答、原文溯源与智能助手",
         media: [
           {
-            src: "/portfolio/yuangui/yuangui-citations.webp",
-            alt: "建规景问答助手带规范引用的回答界面",
+            src: "/portfolio/yuangui/canon-citations.webp",
+            alt: "建规景问答助手带规范引用与条文出处的回答界面",
             label: "引用式回答",
+            objectPosition: "left top",
+          },
+          {
+            src: "/portfolio/yuangui/canon-helper-chat.webp",
+            alt: "建规景问答助手对话式检索界面",
+            label: "问答助手",
             objectPosition: "left top",
           },
           {
             src: "/portfolio/yuangui/yuangui-source.webp",
             alt: "建规景问答助手规范 PDF 原文预览",
             label: "原文溯源",
-            objectPosition: "left top",
-          },
-          {
-            src: "/portfolio/yuangui/yuangui-evaluation.webp",
-            alt: "建规景问答助手评估系统界面",
-            label: "评测系统",
             objectPosition: "left top",
           },
         ],
@@ -275,6 +275,10 @@ export default function Internships({
                   <div
                     className={`intern-layout${
                       itemProject.media ? " has-project-media" : ""
+                    }${
+                      itemProject.mediaVariant === "poster"
+                        ? " has-poster-media"
+                        : ""
                     }`}
                   >
                     <header className="intern-company-header">

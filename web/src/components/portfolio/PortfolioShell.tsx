@@ -453,6 +453,33 @@ export default function PortfolioShell() {
         ))}
       </aside>
 
+      {guideSlides.length > 1 ? (
+        <>
+          <button
+            type="button"
+            className="pf-arrow pf-arrow-prev"
+            onClick={() => goSlide(slideRef.current - 1)}
+            disabled={slide === 0}
+            aria-label="上一页"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden>
+              <path d="M15 5 8 12l7 7" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            className="pf-arrow pf-arrow-next"
+            onClick={() => goSlide(slideRef.current + 1)}
+            disabled={slide === guideSlides.length - 1}
+            aria-label="下一页"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden>
+              <path d="m9 5 7 7-7 7" />
+            </svg>
+          </button>
+        </>
+      ) : null}
+
       <BottomGuide
         slides={guideSlides}
         active={slide}

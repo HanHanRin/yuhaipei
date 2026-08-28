@@ -62,7 +62,6 @@ export const chapters: ChapterMeta[] = [
     slides: [
       { id: "cmb", title: "招行景气度" },
       { id: "opc", title: "OPC" },
-      { id: "yuangui", title: "元规" },
       { id: "xiaocai", title: "搭小财" },
     ],
   },
@@ -75,7 +74,7 @@ export const chapters: ChapterMeta[] = [
     slides: [
       { id: "books", title: "书" },
       { id: "film", title: "电影" },
-      { id: "photo", title: "摄影" },
+      { id: "photo", title: "现场" },
     ],
   },
   {

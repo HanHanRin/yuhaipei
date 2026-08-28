@@ -30,7 +30,7 @@ const LIFE: readonly LifeSlide[] = [
   {
     id: "books",
     label: "BOOKSHELF",
-    title: "书",
+    title: "我喜欢的书",
     hint: "我读 Agent 的起点，不在 AI 圈，在一本城市规划教材里",
     feature: {
       src: "/portfolio/life/book-multiagent.webp",
@@ -48,7 +48,7 @@ const LIFE: readonly LifeSlide[] = [
   {
     id: "film",
     label: "CINEMA",
-    title: "电影",
+    title: "我热爱的电影",
     hint: "好电影提出的问题，往往比它给的答案更耐放",
     feature: {
       src: "/portfolio/life/film-ikiru.webp",
@@ -66,7 +66,7 @@ const LIFE: readonly LifeSlide[] = [
   {
     id: "photo",
     label: "OBSERVE",
-    title: "现场",
+    title: "我在追星现场",
     hint: "对 AI 的热情，最后都要落到「去现场看看」",
     feature: {
       src: "/portfolio/life/amd-lisa-su.webp",

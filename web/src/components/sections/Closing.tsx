@@ -3,16 +3,18 @@
 import { useState } from "react";
 import { RESUME_PATH } from "@/components/portfolio/data";
 
+const EMAIL = "2352202496@qq.com";
+const PHONE = "184-3708-8052";
+
 export default function Closing() {
   const [notice, setNotice] = useState("");
 
-  const copyEmail = async () => {
-    const email = "2352202496@qq.com";
+  const copy = async (value: string, label: string) => {
     try {
-      await navigator.clipboard.writeText(email);
+      await navigator.clipboard.writeText(value);
     } catch {
       const helper = document.createElement("textarea");
-      helper.value = email;
+      helper.value = value;
       helper.setAttribute("readonly", "");
       helper.style.position = "fixed";
       helper.style.opacity = "0";
@@ -21,7 +23,7 @@ export default function Closing() {
       document.execCommand("copy");
       helper.remove();
     }
-    setNotice("邮箱已复制");
+    setNotice(`${label}已复制`);
     window.setTimeout(() => setNotice(""), 1800);
   };
 
@@ -42,9 +44,22 @@ export default function Closing() {
       <div className="closing-links">
         <div className="closing-row">
           <span>EMAIL</span>
-          <a href="mailto:2352202496@qq.com">2352202496@qq.com</a>
-          <button type="button" onClick={copyEmail}>
-            复制
+          <button
+            type="button"
+            className="closing-value"
+            onClick={() => copy(EMAIL, "邮箱")}
+          >
+            {EMAIL}
+          </button>
+        </div>
+        <div className="closing-row">
+          <span>PHONE</span>
+          <button
+            type="button"
+            className="closing-value"
+            onClick={() => copy(PHONE, "手机号")}
+          >
+            {PHONE}
           </button>
         </div>
         <div className="closing-row">
@@ -64,9 +79,7 @@ export default function Closing() {
           </a>
         </div>
       </div>
-      <p className="closing-note">
-        手机号与微信不直接公开，邮件联系后由本人确认交换。
-      </p>
+      <p className="closing-note">点击邮箱或手机号即可复制。</p>
       {notice ? (
         <p className="closing-toast" role="status">
           {notice}
