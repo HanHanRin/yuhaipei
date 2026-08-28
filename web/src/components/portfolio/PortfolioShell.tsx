@@ -10,7 +10,10 @@ import BottomGuide from "./BottomGuide";
 import { chapters, clamp } from "./data";
 import Cover from "@/components/sections/Cover";
 import Resume from "@/components/sections/Resume";
-import Internships from "@/components/sections/Internships";
+import Internships, {
+  INTERNSHIPS,
+  internshipProjectSlides,
+} from "@/components/sections/Internships";
 import Projects from "@/components/sections/Projects";
 import Life from "@/components/sections/Life";
 import Closing from "@/components/sections/Closing";
@@ -27,6 +30,7 @@ type CurtainState = {
 export default function PortfolioShell() {
   const [page, setPage] = useState(0);
   const [slide, setSlide] = useState(0);
+  const [internship, setInternship] = useState(0);
   const [curtain, setCurtain] = useState<CurtainState>({
     phase: "idle",
     direction: "down",
@@ -34,17 +38,33 @@ export default function PortfolioShell() {
   });
 
   const busyRef = useRef(false);
+  const navLockRef = useRef(false);
+  const navLockTimerRef = useRef(0);
   const pageRef = useRef(page);
   const slideRef = useRef(slide);
+  const internshipRef = useRef(internship);
   const timersRef = useRef<number[]>([]);
   const touchRef = useRef<{ x: number; y: number } | null>(null);
   /** 横/竖 wheel 累积 · 同 portfolio-demo handleGalleryWheel / cyj 画廊 */
-  const wheelHorizRef = useRef({ distance: 0, timer: 0, locked: false });
-  const wheelVertRef = useRef({ distance: 0, timer: 0, locked: false });
+  const wheelHorizRef = useRef({
+    distance: 0,
+    timer: 0,
+    locked: false,
+    lastStep: 0,
+  });
+  const wheelVertRef = useRef({
+    distance: 0,
+    timer: 0,
+    locked: false,
+    lastStep: 0,
+  });
 
+  const NAV_LOCK_MS = 420;
   const WHEEL_IDLE_MS = 140;
-  const WHEEL_THRESH_X = 48;
+  const WHEEL_THRESH_X = 90;
   const WHEEL_THRESH_Y = 56;
+  const TOUCH_THRESH_X = 70;
+  const TOUCH_THRESH_Y = 56;
 
   useEffect(() => {
     pageRef.current = page;
@@ -54,27 +74,59 @@ export default function PortfolioShell() {
     slideRef.current = slide;
   }, [slide]);
 
+  useEffect(() => {
+    internshipRef.current = internship;
+  }, [internship]);
+
   const chapter = chapters[page]!;
   const theme = chapter.theme;
+  const guideSlides =
+    page === 2 ? internshipProjectSlides(internship) : chapter.slides;
 
   const clearTimers = () => {
     timersRef.current.forEach(window.clearTimeout);
     timersRef.current = [];
   };
 
+  const engageNavLock = () => {
+    navLockRef.current = true;
+    window.clearTimeout(navLockTimerRef.current);
+    wheelHorizRef.current.distance = 0;
+    wheelVertRef.current.distance = 0;
+    navLockTimerRef.current = window.setTimeout(() => {
+      navLockRef.current = false;
+      wheelHorizRef.current.distance = 0;
+      wheelVertRef.current.distance = 0;
+    }, NAV_LOCK_MS);
+  };
+
   const consumeWheelAxis = (
-    axis: { distance: number; timer: number; locked: boolean },
+    axis: {
+      distance: number;
+      timer: number;
+      locked: boolean;
+      lastStep: number;
+    },
     delta: number,
     threshold: number,
     onStep: (step: number) => void,
   ) => {
+    if (axis.locked) {
+      const opposite =
+        axis.lastStep !== 0 && Math.sign(delta) !== axis.lastStep;
+      if (!opposite) return;
+      axis.locked = false;
+      axis.lastStep = 0;
+      axis.distance = 0;
+      window.clearTimeout(axis.timer);
+    }
+
     window.clearTimeout(axis.timer);
     axis.timer = window.setTimeout(() => {
       axis.distance = 0;
       axis.locked = false;
+      axis.lastStep = 0;
     }, WHEEL_IDLE_MS);
-
-    if (axis.locked) return;
 
     axis.distance += delta;
     if (Math.abs(axis.distance) < threshold) return;
@@ -82,6 +134,7 @@ export default function PortfolioShell() {
     const step = axis.distance > 0 ? 1 : -1;
     axis.distance = 0;
     axis.locked = true;
+    axis.lastStep = step;
     onStep(step);
   };
 
@@ -89,26 +142,45 @@ export default function PortfolioShell() {
     (nextRaw: number) => {
       const next = clamp(nextRaw, 0, chapters.length - 1);
       if (next === pageRef.current || busyRef.current) return;
+      const currentPage = pageRef.current;
 
       const reduce =
         typeof window !== "undefined" &&
         window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
       if (reduce) {
+        pageRef.current = next;
+        const nextInternship =
+          next === 2 && currentPage > 2 ? INTERNSHIPS.length - 1 : 0;
         setPage(next);
         setSlide(0);
+        slideRef.current = 0;
+        if (next === 2) {
+          setInternship(nextInternship);
+          internshipRef.current = nextInternship;
+        }
+        engageNavLock();
         return;
       }
 
-      const direction = next > pageRef.current ? "down" : "up";
+      const direction = next > currentPage ? "down" : "up";
+      const nextInternship =
+        next === 2 && currentPage > 2 ? INTERNSHIPS.length - 1 : 0;
       busyRef.current = true;
+      engageNavLock();
       clearTimers();
       setCurtain({ phase: "cover", direction, target: next });
 
       timersRef.current.push(
         window.setTimeout(() => {
+          pageRef.current = next;
           setPage(next);
           setSlide(0);
+          slideRef.current = 0;
+          if (next === 2) {
+            setInternship(nextInternship);
+            internshipRef.current = nextInternship;
+          }
           setCurtain({ phase: "reveal", direction, target: next });
         }, 320),
       );
@@ -124,12 +196,45 @@ export default function PortfolioShell() {
 
   const goSlide = useCallback(
     (nextRaw: number) => {
-      const max = chapters[pageRef.current]!.slides.length - 1;
+      const max =
+        pageRef.current === 2
+          ? internshipProjectSlides(internshipRef.current).length - 1
+          : chapters[pageRef.current]!.slides.length - 1;
       const next = clamp(nextRaw, 0, max);
       if (next === slideRef.current) return;
+      slideRef.current = next;
       setSlide(next);
+      engageNavLock();
     },
     [],
+  );
+
+  const goInternship = useCallback((nextRaw: number) => {
+    const next = clamp(nextRaw, 0, INTERNSHIPS.length - 1);
+    if (next === internshipRef.current) return;
+    internshipRef.current = next;
+    slideRef.current = 0;
+    setInternship(next);
+    setSlide(0);
+    engageNavLock();
+  }, []);
+
+  const goVertical = useCallback(
+    (step: number) => {
+      if (pageRef.current !== 2) {
+        goPage(pageRef.current + step);
+        return;
+      }
+
+      const nextInternship = internshipRef.current + step;
+      if (nextInternship >= 0 && nextInternship < INTERNSHIPS.length) {
+        goInternship(nextInternship);
+        return;
+      }
+
+      goPage(pageRef.current + step);
+    },
+    [goInternship, goPage],
   );
 
   useEffect(() => {
@@ -143,7 +248,7 @@ export default function PortfolioShell() {
 
     const onWheel = (event: WheelEvent) => {
       if (inAiAvatar(event.target)) return;
-      if (busyRef.current) {
+      if (busyRef.current || navLockRef.current) {
         event.preventDefault();
         return;
       }
@@ -155,6 +260,7 @@ export default function PortfolioShell() {
       // 主轴：横向优先于纵向（便于在章内扫子页）
       if (absX > absY && absX > 8) {
         event.preventDefault();
+        if (navLockRef.current) return;
         consumeWheelAxis(
           wheelHorizRef.current,
           event.deltaX,
@@ -166,11 +272,12 @@ export default function PortfolioShell() {
 
       if (absY <= absX || absY < 24) return;
       event.preventDefault();
+      if (navLockRef.current) return;
       consumeWheelAxis(
         wheelVertRef.current,
         event.deltaY,
         WHEEL_THRESH_Y,
-        (step) => goPage(pageRef.current + step),
+        goVertical,
       );
     };
 
@@ -180,11 +287,11 @@ export default function PortfolioShell() {
 
       if (["ArrowDown", "PageDown"].includes(event.key)) {
         event.preventDefault();
-        goPage(pageRef.current + 1);
+        goVertical(1);
       }
       if (["ArrowUp", "PageUp"].includes(event.key)) {
         event.preventDefault();
-        goPage(pageRef.current - 1);
+        goVertical(-1);
       }
       if (event.key === "ArrowRight") {
         event.preventDefault();
@@ -198,7 +305,7 @@ export default function PortfolioShell() {
       if (event.key === "End") goPage(chapters.length - 1);
       if (event.key === " ") {
         event.preventDefault();
-        goPage(pageRef.current + 1);
+        goVertical(1);
       }
     };
 
@@ -212,9 +319,15 @@ export default function PortfolioShell() {
       window.clearTimeout(horiz.timer);
       window.clearTimeout(vert.timer);
     };
-  }, [goPage, goSlide, WHEEL_THRESH_X, WHEEL_THRESH_Y, WHEEL_IDLE_MS]);
+  }, [goPage, goSlide, goVertical, WHEEL_THRESH_X, WHEEL_THRESH_Y, WHEEL_IDLE_MS]);
 
-  useEffect(() => () => clearTimers(), []);
+  useEffect(
+    () => () => {
+      clearTimers();
+      window.clearTimeout(navLockTimerRef.current);
+    },
+    [],
+  );
 
   const onTouchStart = (event: React.TouchEvent) => {
     const t = event.touches[0];
@@ -225,18 +338,18 @@ export default function PortfolioShell() {
   const onTouchEnd = (event: React.TouchEvent) => {
     const start = touchRef.current;
     touchRef.current = null;
-    if (!start || busyRef.current) return;
+    if (!start || busyRef.current || navLockRef.current) return;
     const t = event.changedTouches[0];
     if (!t) return;
     const dx = t.clientX - start.x;
     const dy = t.clientY - start.y;
-    if (Math.abs(dx) < 70 && Math.abs(dy) < 56) return;
+    if (Math.abs(dx) < TOUCH_THRESH_X && Math.abs(dy) < TOUCH_THRESH_Y) return;
 
     if (Math.abs(dx) > Math.abs(dy)) {
-      if (Math.abs(dx) < 70) return;
+      if (Math.abs(dx) < TOUCH_THRESH_X) return;
       goSlide(slideRef.current + (dx < 0 ? 1 : -1));
     } else {
-      goPage(pageRef.current + (dy < 0 ? 1 : -1));
+      goVertical(dy < 0 ? 1 : -1);
     }
   };
 
@@ -246,6 +359,7 @@ export default function PortfolioShell() {
       data-chapter={chapter.id}
       data-page={page}
       data-slide={slide}
+      data-internship={page === 2 ? internship : undefined}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
@@ -295,7 +409,11 @@ export default function PortfolioShell() {
           aria-hidden={page !== 2}
           data-active={page === 2}
         >
-          <Internships slide={slide} />
+          <Internships
+            company={internship}
+            project={slide}
+            onCompanySelect={goInternship}
+          />
         </section>
         <section
           className={`pf-chapter${page === 3 ? " is-active" : ""}`}
@@ -336,7 +454,7 @@ export default function PortfolioShell() {
       </aside>
 
       <BottomGuide
-        slides={chapter.slides}
+        slides={guideSlides}
         active={slide}
         onSelect={goSlide}
         theme={theme}
@@ -345,10 +463,10 @@ export default function PortfolioShell() {
       <div className="pf-hint" aria-hidden>
         <span>VERT</span>
         <i />
-        <span>章</span>
+        <span>{page === 2 ? "实习" : "章"}</span>
         <span className="pf-hint-gap">HORIZ</span>
         <i />
-        <span>页</span>
+        <span>{page === 2 ? "项目" : "页"}</span>
       </div>
 
       <div

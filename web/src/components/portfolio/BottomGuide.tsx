@@ -3,7 +3,7 @@
 import type { SlideMeta } from "./data";
 
 type Props = {
-  slides: SlideMeta[];
+  slides: readonly SlideMeta[];
   active: number;
   onSelect: (index: number) => void;
   theme: "light" | "dark";
