@@ -50,17 +50,17 @@ export default function Closing() {
         <div className="closing-row">
           <span>RESUME</span>
           <a href={RESUME_PATH} download>
-            下载简历（toB）
+            下载简历
           </a>
         </div>
         <div className="closing-row">
           <span>GITHUB</span>
           <a
-            href="https://github.com/DIYUSICOOKIE"
+            href="https://github.com/HanHanRin"
             target="_blank"
             rel="noreferrer"
           >
-            DIYUSICOOKIE
+            HanHanRin
           </a>
         </div>
       </div>

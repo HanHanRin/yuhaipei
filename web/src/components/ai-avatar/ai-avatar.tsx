@@ -73,6 +73,9 @@ function compressImage(file: File): Promise<string> {
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const chatApi = () => `${BASE_PATH}/api/chat`;
 
+/** GitHub Pages 静态站无法接外部 API：构建时 NEXT_PUBLIC_AI_TEASER=1 走预告态 */
+const IS_AI_TEASER = process.env.NEXT_PUBLIC_AI_TEASER === "1";
+
 const PRESET_QUESTIONS = [
   "他的核心优势是什么？",
   "规划背景如何迁移到 AI 产品经理？",
@@ -95,7 +98,56 @@ const HINT_LINES = [
 ];
 const HINT_KEY = "ai-avatar-hint-dismissed";
 
+/** Pages 部署用：无首访气泡，点击仅提示可问答版本即将开放 */
+function AiAvatarTeaser() {
+  const [open, setOpen] = useState(false);
+  const [hovering, setHovering] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
+  return (
+    <>
+      <button
+        type="button"
+        className={`ai-avatar-petbtn${open ? " open" : ""}`}
+        aria-label={open ? "关闭提示" : "打开 AI 分身提示"}
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+        onMouseEnter={() => setHovering(true)}
+        onMouseLeave={() => setHovering(false)}
+      >
+        <ClaudePet state={hovering ? "hello" : "idle"} />
+      </button>
+      {open ? (
+        <div className="ai-avatar-teaser" role="status">
+          <p>可问答版本尽请期待</p>
+          <button
+            type="button"
+            className="ai-avatar-teaser-close"
+            aria-label="关闭"
+            onClick={() => setOpen(false)}
+          >
+            ×
+          </button>
+        </div>
+      ) : null}
+    </>
+  );
+}
+
 export default function AiAvatar() {
+  if (IS_AI_TEASER) return <AiAvatarTeaser />;
+  return <AiAvatarFull />;
+}
+
+function AiAvatarFull() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<DisplayMessage[]>([WELCOME]);
   const [input, setInput] = useState("");

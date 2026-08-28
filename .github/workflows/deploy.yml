@@ -44,6 +44,8 @@ jobs:
           STATIC_EXPORT: "1"
           # 仓库名叫 yuhaipei，站点挂在 hanhanrin.github.io/yuhaipei 下
           NEXT_PUBLIC_BASE_PATH: /yuhaipei
+          # Pages 无服务端 API：小机器人走预告态，本地默认仍为完整问答
+          NEXT_PUBLIC_AI_TEASER: "1"
 
       - uses: actions/configure-pages@v5
 

@@ -90,9 +90,7 @@ export const chapters: ChapterMeta[] = [
 
 export const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 export const asset = (path: string) => `${BASE_PATH}${path}`;
-export const RESUME_PATH = asset(
-  "/resume/余海沛_AI产品经理简历带照片_v1.4_toB.pdf",
-);
+export const RESUME_PATH = asset("/resume/余海沛-中文简历2026.8.pdf");
 
 export function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
