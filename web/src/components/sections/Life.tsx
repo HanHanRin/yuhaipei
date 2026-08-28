@@ -51,7 +51,19 @@ const LIFE: readonly LifeSlide[] = [
     id: "film",
     label: "CINEMA",
     title: "电影",
-    hint: "片单占位 · 后续补海报与短评",
+    hint: "好电影提出的问题，往往比它给的答案更耐放",
+    feature: {
+      src: "/portfolio/life/film-ikiru.webp",
+      alt: "《生之欲》致敬插画：雪夜里独自坐在秋千上的老人",
+      caption: "原创致敬插画 · 黑泽明《生之欲》(1952)",
+      shape: "portrait",
+      title: "生之欲 · 黑泽明",
+      meta: "IKIRU / 1952",
+      note: [
+        "一个被宣告了期限的人，用最后的日子问了一个最朴素的问题：怎么过，才算真的活过。",
+        "他给的答案是——珍重活在世上的每一个日子。",
+      ],
+    },
     items: ["叙事结构", "空间镜头", "人物弧线"],
   },
   {
