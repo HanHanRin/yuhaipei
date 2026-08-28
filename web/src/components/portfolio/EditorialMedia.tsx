@@ -6,6 +6,8 @@ export type EditorialMediaItem = {
   alt: string;
   label?: string;
   objectPosition?: string;
+  /** cover 裁切填满；contain 完整露出画面（品牌截图窄屏用） */
+  fit?: "cover" | "contain";
 };
 
 export type EditorialMediaVariant =
@@ -55,7 +57,10 @@ export default function EditorialMedia({
               alt={item.alt}
               fill
               sizes={IMAGE_SIZES[variant]}
-              style={{ objectPosition: item.objectPosition ?? "center" }}
+              style={{
+                objectFit: item.fit ?? "cover",
+                objectPosition: item.objectPosition ?? "center",
+              }}
             />
             {item.label ? (
               <span className="editorial-media-label">{item.label}</span>
