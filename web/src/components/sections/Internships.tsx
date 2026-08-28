@@ -93,11 +93,30 @@ export const INTERNSHIPS: readonly Internship[] = [
       {
         id: "workflow-automation",
         title: "工作流自动化",
-        focus: "跨部门 AI 提效：视频审核与 KOL 协作链路",
+        focus: "跨部门 AI 提效工作流",
         points: [
-          "视频审核侧串联关键帧抽取、多模态审核与人工复审，按「自动通过 / 拦截 / 转人工」分流并回填任务表",
-          "KOL 侧以状态机编排 7 条工作流，覆盖找人、发信、追发、回复识别、寄样与作品监测",
-          "两条链路均已交付，降低投放素材逐条审核与达人合作跟进的遗漏成本",
+          "解决投放素材人工逐条审核、达人合作跟进易遗漏的问题",
+          "视频审核侧串联关键帧抽取、多模态模型审核与人工复审，按「自动通过 / 拦截 / 转人工」分流并回填任务表",
+          "KOL 侧以状态机编排 7 条工作流，覆盖找人、发信、追发、回复识别、寄样与作品监测全链路；两条链路均已交付",
+        ],
+        mediaVariant: "flows",
+        mediaCredit: "n8n 工作流编排 · 视频审核与 KOL 全链路",
+        media: [
+          {
+            src: "/portfolio/azazie/n8n-video-review.webp",
+            alt: "n8n 多国家视频审核自动化工作流画布",
+            label: "视频审核",
+          },
+          {
+            src: "/portfolio/azazie/n8n-kol-outreach.webp",
+            alt: "n8n KOL 合作邮箱自动获取工作流画布",
+            label: "达人触达",
+          },
+          {
+            src: "/portfolio/azazie/n8n-kol-monitor.webp",
+            alt: "n8n KOL 物流与发文监测工作流画布",
+            label: "寄样与作品监测",
+          },
         ],
       },
     ],

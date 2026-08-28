@@ -3170,29 +3170,86 @@ main {
   transform: rotate(5deg) translateY(5%);
 }
 
+/* n8n 工作流：宽幅画布错落堆叠 */
+.editorial-media--flows .editorial-media-item {
+  border: 1px solid color-mix(in srgb, #f3efe5 34%, transparent);
+  height: 34%;
+}
+
+.editorial-media--flows .editorial-media-item img {
+  object-fit: cover;
+  object-position: left center;
+}
+
+.editorial-media--flows .editorial-media-item-1 {
+  z-index: 2;
+  left: 0;
+  right: 22%;
+  top: 3%;
+}
+
+.editorial-media--flows .editorial-media-item-2 {
+  z-index: 3;
+  left: 10%;
+  right: 6%;
+  top: 35%;
+}
+
+.editorial-media--flows .editorial-media-item-3 {
+  z-index: 4;
+  left: 3%;
+  right: 16%;
+  bottom: 4%;
+}
+
 .editorial-media--company .editorial-media-item-1 {
   inset: 0;
 }
 
-.editorial-media--company .editorial-media-item img {
-  object-fit: contain;
-  background: color-mix(in srgb, #14140f 18%, transparent);
+.editorial-media--company .editorial-media-item {
+  background: transparent;
+  box-shadow: none;
 }
 
+.editorial-media--company .editorial-media-item img {
+  object-fit: contain;
+}
+
+/* 四边羽化：官网截图不留硬边 */
 .editorial-media--company .editorial-media-grid {
-  mask-image: linear-gradient(90deg, #000 0%, #000 78%, transparent 100%);
+  mask-image:
+    linear-gradient(90deg, transparent 0%, #000 9%, #000 87%, transparent 100%),
+    linear-gradient(180deg, transparent 0%, #000 11%, #000 86%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
 }
 
 .editorial-media--company .editorial-media-grid::after {
   background:
-    linear-gradient(90deg, transparent 55%, var(--media-fade) 100%),
-    linear-gradient(0deg, var(--media-fade), transparent 28%);
-  opacity: 0.86;
+    linear-gradient(90deg, var(--media-fade), transparent 14%, transparent 82%, var(--media-fade)),
+    linear-gradient(0deg, var(--media-fade), transparent 18%);
+  opacity: 0.7;
 }
 
 .intern-company-media .editorial-media,
 .intern-project-media .editorial-media {
   --media-fade: var(--olive);
+}
+
+/*
+  叠压区可读性：只把朝向文字的那条边渐变淡出，其余画面保持不透明。
+  --overlap-fade 控制淡出带高度，靠 mask 出软边界而不是整块降透明度。
+*/
+.intern-company-media,
+.intern-project-media,
+.project-media-wrap {
+  --overlap-fade: 0px;
+  mask-image: linear-gradient(
+    180deg,
+    transparent 0px,
+    rgba(0, 0, 0, 0.32) calc(var(--overlap-fade) * 0.55),
+    #000 var(--overlap-fade)
+  );
 }
 
 .editorial-media.is-compact .editorial-media-label {
@@ -3276,6 +3333,7 @@ main {
     max-height: min(42vh, 320px);
     min-height: 240px;
     order: -1;
+    --overlap-fade: 48px;
   }
 
   .project-copy {
@@ -3515,7 +3573,7 @@ main {
     height: auto;
     margin-top: 8px;
     z-index: 0;
-    opacity: 0.5;
+    --overlap-fade: 52px;
   }
 
   .intern-project-stage {
@@ -3532,12 +3590,7 @@ main {
     height: auto;
     margin-bottom: 10px;
     z-index: 0;
-    /* 若与标题叠压：图在下层且半透明，白字仍可辨认 */
-    opacity: 0.48;
-  }
-
-  .intern-project-media .editorial-media-item {
-    background: transparent;
+    --overlap-fade: 60px;
   }
 
   .intern-project-copy {
