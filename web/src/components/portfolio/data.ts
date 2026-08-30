@@ -36,8 +36,7 @@ export const chapters: ChapterMeta[] = [
     theme: "light",
     slides: [
       { id: "portrait", title: "身份" },
-      { id: "education", title: "教育" },
-      { id: "skills", title: "能力" },
+      { id: "education-capability", title: "教育与能力" },
     ],
   },
   {
@@ -75,6 +74,7 @@ export const chapters: ChapterMeta[] = [
       { id: "books", title: "书" },
       { id: "film", title: "电影" },
       { id: "photo", title: "现场" },
+      { id: "photography", title: "摄影" },
     ],
   },
   {

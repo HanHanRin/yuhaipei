@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "export:pdf": "node scripts/export-pdf.mjs",
     "start": "next start",
     "lint": "eslint"
   },

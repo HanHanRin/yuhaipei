@@ -18,13 +18,30 @@ type Feature = {
   note: string[];
 };
 
-type LifeSlide = {
+type GalleryImage = {
+  src: string;
+  alt: string;
+};
+
+type LifeSlideBase = {
   id: string;
   label: string;
   title: string;
   hint: string;
-  feature: Feature;
 };
+
+type LifeSlide = LifeSlideBase &
+  (
+    | {
+        kind: "feature";
+        feature: Feature;
+      }
+    | {
+        kind: "gallery";
+        description: string;
+        images: readonly GalleryImage[];
+      }
+  );
 
 const LIFE: readonly LifeSlide[] = [
   {
@@ -32,6 +49,7 @@ const LIFE: readonly LifeSlide[] = [
     label: "BOOKSHELF",
     title: "我喜欢的书",
     hint: "我读 Agent 的起点，不在 AI 圈，在一本城市规划教材里",
+    kind: "feature",
     feature: {
       src: "/portfolio/life/book-multiagent.webp",
       alt: "《多代理人模拟：原理及城市规划应用》书籍封面",
@@ -50,6 +68,7 @@ const LIFE: readonly LifeSlide[] = [
     label: "CINEMA",
     title: "我热爱的电影",
     hint: "好电影提出的问题，往往比它给的答案更耐放",
+    kind: "feature",
     feature: {
       src: "/portfolio/life/film-ikiru.webp",
       alt: "《生之欲》致敬插画：雪夜里独自坐在秋千上的老人",
@@ -68,6 +87,7 @@ const LIFE: readonly LifeSlide[] = [
     label: "OBSERVE",
     title: "我在追星现场",
     hint: "对 AI 的热情，最后都要落到「去现场看看」",
+    kind: "feature",
     feature: {
       src: "/portfolio/life/amd-lisa-su.webp",
       alt: "在 AMD 开发者大会与 AMD 总裁苏姿丰的合影",
@@ -81,6 +101,33 @@ const LIFE: readonly LifeSlide[] = [
       ],
     },
   },
+  {
+    id: "photography",
+    label: "PHOTOGRAPHY",
+    title: "我用镜头保留远方，也重新发现日常",
+    hint: "远方让我出发，日常让我停下",
+    kind: "gallery",
+    description:
+      "我是一名长期保持创作的摄影爱好者。题材从山野风景、城市建筑，到自然生态与人物肖像。拿着相机步履不停，是因为心里始终向往远方；而真正让我反复按下快门的，也常常是日常里稍纵即逝的光、秩序与情绪。摄影让我保持好奇，也训练我先观察、再判断。",
+    images: [
+      {
+        src: "/portfolio/life/photography/mountain-clouds.webp",
+        alt: "群山与云海在晨光中层层展开的风光摄影",
+      },
+      {
+        src: "/portfolio/life/photography/canal-architecture.webp",
+        alt: "江南水乡河道、石桥与白墙建筑的城市摄影",
+      },
+      {
+        src: "/portfolio/life/photography/night-heron.webp",
+        alt: "一只夜鹭停在水边枯木上的生态摄影",
+      },
+      {
+        src: "/portfolio/life/photography/cherry-blossom-portrait.webp",
+        alt: "樱花树下回眸微笑的人物肖像摄影",
+      },
+    ],
+  },
 ];
 
 export default function Life({ slide }: Props) {
@@ -91,34 +138,66 @@ export default function Life({ slide }: Props) {
         style={{ transform: `translateX(-${slide * 100}%)` }}
       >
         {LIFE.map((item) => (
-          <article className="sec-panel life-panel" key={item.id}>
+          <article
+            className={`sec-panel life-panel${item.kind === "gallery" ? " life-photography-panel" : ""}`}
+            key={item.id}
+          >
             <div className="life-kicker">04 · LIFE / {item.label}</div>
-            <div className="life-layout">
-              <div className="life-copy">
-                <h2>{item.title}</h2>
-                <p className="life-hint">{item.hint}</p>
-                <div className="life-feature-text">
-                  {item.feature.meta ? (
-                    <span className="life-feature-meta">
-                      {item.feature.meta}
-                    </span>
-                  ) : null}
-                  <h3>{item.feature.title}</h3>
-                  {item.feature.note.map((line) => (
-                    <p key={line}>{line}</p>
+            {item.kind === "gallery" ? (
+              <div className="life-photography-layout">
+                <div className="life-photography-copy">
+                  <h2>{item.title}</h2>
+                  <p className="life-hint">{item.hint}</p>
+                  <p className="life-photography-description">
+                    {item.description}
+                  </p>
+                </div>
+                <div
+                  className="life-photo-grid"
+                  role="group"
+                  aria-label="摄影作品选集"
+                >
+                  {item.images.map((photo, photoIndex) => (
+                    <figure className="life-photo-tile" key={photo.src}>
+                      <Image
+                        src={asset(photo.src)}
+                        alt={photo.alt}
+                        fill
+                        loading={photoIndex === 0 ? "eager" : "lazy"}
+                        sizes="(max-width: 860px) 46vw, 28vw"
+                      />
+                    </figure>
                   ))}
                 </div>
               </div>
-              <figure className={`life-figure is-${item.feature.shape}`}>
-                <Image
-                  src={asset(item.feature.src)}
-                  alt={item.feature.alt}
-                  fill
-                  sizes="(max-width: 860px) 78vw, 34vw"
-                />
-                <figcaption>{item.feature.caption}</figcaption>
-              </figure>
-            </div>
+            ) : (
+              <div className="life-layout">
+                <div className="life-copy">
+                  <h2>{item.title}</h2>
+                  <p className="life-hint">{item.hint}</p>
+                  <div className="life-feature-text">
+                    {item.feature.meta ? (
+                      <span className="life-feature-meta">
+                        {item.feature.meta}
+                      </span>
+                    ) : null}
+                    <h3>{item.feature.title}</h3>
+                    {item.feature.note.map((line) => (
+                      <p key={line}>{line}</p>
+                    ))}
+                  </div>
+                </div>
+                <figure className={`life-figure is-${item.feature.shape}`}>
+                  <Image
+                    src={asset(item.feature.src)}
+                    alt={item.feature.alt}
+                    fill
+                    sizes="(max-width: 860px) 78vw, 34vw"
+                  />
+                  <figcaption>{item.feature.caption}</figcaption>
+                </figure>
+              </div>
+            )}
           </article>
         ))}
       </div>

@@ -2614,10 +2614,10 @@ main {
 
 .resume-split {
   display: grid;
-  grid-template-columns: minmax(200px, 280px) 1fr;
-  gap: 40px 56px;
+  grid-template-columns: minmax(200px, 260px) minmax(0, 1fr);
+  gap: 40px 52px;
   align-items: start;
-  max-width: 1080px;
+  max-width: 1380px;
 }
 
 .resume-photo {
@@ -2669,9 +2669,10 @@ main {
 .resume-about h3 {
   margin: 0 0 16px;
   font-family: "Times New Roman", Times, serif;
-  font-size: clamp(26px, 3.4vw, 40px);
+  font-size: clamp(25px, 2.8vw, 38px);
   font-weight: 500;
-  line-height: 1.25;
+  line-height: 1.22;
+  max-width: 25em;
 }
 
 .resume-about h3 em {
@@ -2681,10 +2682,51 @@ main {
 
 .resume-about p {
   margin: 0;
-  max-width: 42em;
+  max-width: 68em;
   line-height: 1.7;
-  font-size: 15px;
+  font-size: 14px;
   opacity: 0.85;
+}
+
+.resume-transition {
+  max-width: 72em !important;
+}
+
+.resume-strengths {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 22px 0 0;
+  padding: 0;
+  max-width: 1050px;
+}
+
+.resume-strengths li {
+  padding: 14px 14px 13px 0;
+  border-top: 2px solid color-mix(in srgb, var(--rust) 60%, transparent);
+}
+
+.resume-strengths span {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--rust);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.resume-strengths strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.resume-strengths p {
+  font-size: 12px;
+  line-height: 1.58;
+  opacity: 0.68;
 }
 
 .resume-hint {
@@ -2707,77 +2749,126 @@ main {
   pointer-events: none;
 }
 
-.resume-edu,
-.resume-skills {
+.resume-growth {
   position: relative;
 }
 
-.resume-block {
-  max-width: 560px;
-  padding: 20px 0;
-  border-top: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
+.resume-growth-heading {
+  position: relative;
+  z-index: 2;
+  max-width: 760px;
 }
 
-.resume-block header {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 8px;
+.resume-growth-heading h2 {
+  margin: 0 0 8px;
+  font-family: "Times New Roman", Times, serif;
+  font-size: clamp(28px, 3.2vw, 42px);
+  font-weight: 500;
+  line-height: 1.15;
 }
 
-.resume-block strong {
-  font-size: 18px;
-}
-
-.resume-block span {
-  font-size: 12px;
-  letter-spacing: 0.06em;
-  opacity: 0.55;
-  white-space: nowrap;
-}
-
-.resume-block p {
+.resume-growth-heading > p:last-child {
   margin: 0;
-  font-size: 15px;
-}
-
-.resume-block small {
-  display: block;
-  margin-top: 8px;
-  opacity: 0.55;
-}
-
-.resume-skill-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  max-width: 640px;
-}
-
-.resume-skill-list li {
-  display: grid;
-  grid-template-columns: 48px 1fr;
-  gap: 16px;
-  padding: 18px 0;
-  border-top: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
-}
-
-.resume-skill-list li span {
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  opacity: 0.45;
-}
-
-.resume-skill-list strong {
-  display: block;
-  margin-bottom: 4px;
-  font-size: 16px;
-}
-
-.resume-skill-list p {
-  margin: 0;
+  max-width: 54em;
   font-size: 13px;
-  opacity: 0.7;
+  line-height: 1.65;
+  opacity: 0.62;
+}
+
+.resume-timeline-wrap {
+  position: relative;
+  max-width: 1450px;
+}
+
+.resume-timeline-arrow {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 42px;
+  height: 34px;
+  background: color-mix(in srgb, var(--rust) 22%, transparent);
+  clip-path: polygon(0 22%, 95% 22%, 95% 0, 100% 50%, 95% 100%, 95% 78%, 0 78%);
+}
+
+.resume-timeline {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  list-style: none;
+  margin: 28px 0 0;
+  padding: 0;
+}
+
+.resume-timeline > li {
+  min-width: 0;
+  padding: 16px 18px 18px;
+  border: 1px solid color-mix(in srgb, var(--ink) 13%, transparent);
+  background: color-mix(in srgb, var(--paper) 93%, transparent);
+  box-shadow: 0 14px 34px color-mix(in srgb, var(--ink) 5%, transparent);
+}
+
+.resume-timeline > li.is-practice {
+  border-color: color-mix(in srgb, var(--rust) 48%, transparent);
+  background: color-mix(in srgb, var(--rust) 7%, var(--paper));
+}
+
+.resume-timeline-index {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  margin: -34px 0 12px;
+  border-radius: 50%;
+  background: var(--rust);
+  color: var(--paper);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.resume-timeline-period {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  opacity: 0.52;
+}
+
+.resume-timeline h3 {
+  margin: 0 0 14px;
+  min-height: 2.5em;
+  font-family: "Times New Roman", Times, serif;
+  font-size: clamp(17px, 1.55vw, 21px);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.resume-timeline-detail {
+  padding-top: 11px;
+  border-top: 1px solid color-mix(in srgb, var(--ink) 11%, transparent);
+}
+
+.resume-timeline-detail + .resume-timeline-detail {
+  margin-top: 10px;
+}
+
+.resume-timeline-detail > span {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--rust);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.resume-timeline-detail p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.58;
+  opacity: 0.72;
 }
 
 /* --- Intern --- */
@@ -3591,6 +3682,58 @@ main {
   opacity: 0.5;
 }
 
+.life-photography-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.72fr) minmax(0, 1.45fr);
+  align-items: start;
+  gap: 28px 4vw;
+  max-width: 1450px;
+  height: calc(100% - 38px);
+}
+
+.life-photography-copy h2 {
+  margin: 0 0 8px;
+  max-width: 12em;
+  font-family: "Times New Roman", Times, serif;
+  font-size: clamp(30px, 3.5vw, 48px);
+  font-weight: 500;
+  line-height: 1.12;
+}
+
+.life-photography-description {
+  margin: 22px 0 0;
+  padding-top: 18px;
+  border-top: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
+  max-width: 34em;
+  font-size: 14px;
+  line-height: 1.8;
+  opacity: 0.76;
+}
+
+.life-photo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  width: 100%;
+  height: min(61vh, 620px);
+}
+
+.life-photo-tile {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+  background: color-mix(in srgb, #fff 88%, var(--paper));
+}
+
+.life-photo-tile img {
+  object-fit: contain;
+  object-position: center;
+}
+
 /* --- Closing --- */
 .sec-closing {
   height: 100%;
@@ -3739,13 +3882,61 @@ main {
     gap: 24px;
   }
 
+  .resume-portrait,
+  .resume-growth,
+  .life-photography-panel {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
   .resume-photo {
-    max-width: 220px;
+    max-width: 180px;
   }
 
   .resume-giant {
     font-size: 72px;
     top: 80px;
+  }
+
+  .resume-about h3 {
+    font-size: clamp(24px, 7.2vw, 34px);
+  }
+
+  .resume-strengths {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .resume-growth-heading {
+    padding-right: 18vw;
+  }
+
+  .resume-growth-heading h2 {
+    font-size: clamp(26px, 8vw, 36px);
+  }
+
+  .resume-timeline-arrow {
+    left: 11px;
+    right: auto;
+    top: 0;
+    bottom: -24px;
+    width: 24px;
+    height: auto;
+    clip-path: polygon(22% 0, 78% 0, 78% 94%, 100% 94%, 50% 100%, 0 94%, 22% 94%);
+  }
+
+  .resume-timeline {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    margin-left: 46px;
+  }
+
+  .resume-timeline > li {
+    padding: 16px 16px 18px;
+  }
+
+  .resume-timeline h3 {
+    min-height: 0;
   }
 
   .life-layout {
@@ -3782,6 +3973,33 @@ main {
   .life-figure figcaption {
     bottom: -20px;
     font-size: 9px;
+  }
+
+  .life-photography-layout {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    height: auto;
+  }
+
+  .life-photography-copy h2 {
+    font-size: clamp(27px, 8vw, 38px);
+  }
+
+  .life-photography-description {
+    margin-top: 14px;
+    padding-top: 14px;
+    font-size: 13px;
+    line-height: 1.65;
+  }
+
+  .life-photo-grid {
+    grid-template-rows: none;
+    gap: 7px;
+    height: auto;
+  }
+
+  .life-photo-tile {
+    aspect-ratio: 1 / 1.08;
   }
 
   .sec-panel {
@@ -3983,5 +4201,443 @@ main {
   .pf-guide-card {
     animation: none !important;
     transition: none !important;
+  }
+}
+
+/* ===============================================================
+   PDF export route (/print) - one navigable subpage per PDF page
+   =============================================================== */
+
+html:has(.pdf-export-root),
+body.pdf-export-body {
+  width: auto;
+  height: auto;
+  overflow: visible;
+  background: #d8d5cc;
+}
+
+body.pdf-export-body > .ai-avatar-petbtn,
+body.pdf-export-body > .ai-avatar-hint,
+body.pdf-export-body > .ai-avatar-teaser,
+body.pdf-export-body > .ai-avatar-panel {
+  display: none !important;
+}
+
+.pdf-export-root {
+  width: 16in;
+  margin: 0 auto;
+}
+
+.pdf-export-page {
+  position: relative;
+  isolation: isolate;
+  width: 16in;
+  height: 9in;
+  overflow: hidden;
+  color: var(--ink);
+  break-after: page;
+  page-break-after: always;
+}
+
+.pdf-export-page:last-child {
+  break-after: auto;
+  page-break-after: auto;
+}
+
+.pdf-export-page.theme-dark {
+  color: #f3efe5;
+}
+
+.pdf-export-page[data-chapter="cover"] {
+  background: #f3efe5;
+}
+
+.pdf-export-page[data-chapter="resume"] {
+  background: #fbfaf6;
+}
+
+.pdf-export-page[data-chapter="intern"] {
+  background: #44500f;
+}
+
+.pdf-export-page[data-chapter="projects"] {
+  background: #b85132;
+}
+
+.pdf-export-page[data-chapter="life"] {
+  background: #eee7d8;
+}
+
+.pdf-export-page[data-chapter="closing"] {
+  background: #14140f;
+}
+
+.pdf-page-content {
+  width: 100%;
+  height: 100%;
+}
+
+.pdf-page-topline {
+  position: absolute;
+  z-index: 20;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 0 3.5vw;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 16%, transparent);
+}
+
+.pdf-page-topline strong {
+  font-family: Impact, "Arial Narrow", "Helvetica Neue", sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+}
+
+.pdf-page-topline strong span {
+  margin: 0 2px;
+  opacity: 0.45;
+}
+
+.pdf-page-topline p,
+.pdf-page-footer {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.pdf-page-topline p {
+  margin: 0;
+  opacity: 0.6;
+}
+
+.pdf-page-footer {
+  position: absolute;
+  z-index: 20;
+  right: 3.5vw;
+  bottom: 22px;
+  left: 3.5vw;
+  display: flex;
+  justify-content: space-between;
+  opacity: 0.48;
+}
+
+.pdf-export-page .sec-cover-meta button,
+.pdf-export-page .intern-company-nav {
+  display: none;
+}
+
+.pdf-export-page .sec-rail,
+.pdf-export-page .intern-company-track,
+.pdf-export-page .intern-project-track,
+.pdf-export-page .reveal-in {
+  animation: none !important;
+  transition: none !important;
+}
+
+@page {
+  size: 16in 9in;
+  margin: 0;
+}
+
+@media print {
+  html:has(.pdf-export-root),
+  body.pdf-export-body {
+    width: 100%;
+    height: auto;
+    margin: 0 !important;
+    overflow: visible !important;
+    background: transparent;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .pdf-export-root {
+    width: 100%;
+    margin: 0;
+  }
+
+  .pdf-export-page {
+    width: 100vw;
+    height: 100vh;
+    box-shadow: none;
+  }
+
+  /* Chrome 打印会用独立的媒体查询宽度。这里显式恢复桌面端版式，
+     避免 16:9 PDF 误命中手机断点后出现纵向堆叠和内容截断。 */
+  .pdf-export-page .sec-panel {
+    padding: 100px 5vw 110px;
+    overflow: hidden;
+  }
+
+  .pdf-export-page .resume-split {
+    grid-template-columns: minmax(200px, 260px) minmax(0, 1fr);
+    gap: 40px 52px;
+  }
+
+  .pdf-export-page .resume-portrait,
+  .pdf-export-page .resume-growth,
+  .pdf-export-page .life-photography-panel {
+    overflow: hidden;
+  }
+
+  .pdf-export-page .resume-photo {
+    max-width: none;
+  }
+
+  .pdf-export-page .resume-about h3 {
+    font-size: clamp(25px, 2.8vw, 38px);
+  }
+
+  .pdf-export-page .resume-strengths {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .pdf-export-page .resume-growth-heading {
+    padding-right: 0;
+  }
+
+  .pdf-export-page .resume-growth-heading h2 {
+    font-size: clamp(28px, 3.2vw, 42px);
+  }
+
+  .pdf-export-page .resume-timeline-arrow {
+    left: 0;
+    right: 0;
+    top: 42px;
+    bottom: auto;
+    width: auto;
+    height: 34px;
+    clip-path: polygon(0 22%, 95% 22%, 95% 0, 100% 50%, 95% 100%, 95% 78%, 0 78%);
+  }
+
+  .pdf-export-page .resume-timeline {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    margin: 28px 0 0;
+  }
+
+  .pdf-export-page .resume-timeline > li {
+    padding: 16px 18px 18px;
+  }
+
+  .pdf-export-page .resume-timeline h3 {
+    min-height: 2.5em;
+  }
+
+  .pdf-export-page .intern-panel {
+    padding: 104px 8vw 116px 9vw;
+    overflow: hidden;
+  }
+
+  .pdf-export-page .intern-layout {
+    grid-template-columns: minmax(260px, 0.78fr) minmax(440px, 1.22fr);
+    align-items: center;
+    align-content: normal;
+    gap: 48px 7vw;
+    width: min(1220px, 100%);
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .pdf-export-page .intern-layout.has-poster-media {
+    grid-template-columns: minmax(240px, 0.72fr) minmax(320px, 1.28fr);
+  }
+
+  .pdf-export-page .intern-company-header {
+    display: block;
+    align-self: center;
+  }
+
+  .pdf-export-page .intern-company {
+    margin-bottom: 18px;
+    font-size: clamp(28px, 4.5vw, 48px);
+  }
+
+  .pdf-export-page .intern-role-row {
+    display: flex;
+  }
+
+  .pdf-export-page .intern-role-row strong,
+  .pdf-export-page .intern-role-row span {
+    font-size: 14px;
+  }
+
+  .pdf-export-page .intern-company-intro {
+    display: block;
+  }
+
+  .pdf-export-page .intern-company-media {
+    width: min(100%, 410px);
+    aspect-ratio: 16 / 9;
+    max-height: min(32vh, 240px);
+    height: auto;
+    margin-top: 24px;
+    --overlap-fade: 0px;
+  }
+
+  .pdf-export-page .intern-project-stage {
+    align-self: center;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .pdf-export-page .intern-project-media {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    max-height: min(36vh, 320px);
+    min-height: 0;
+    height: auto;
+    margin-bottom: 16px;
+    --overlap-fade: 0px;
+  }
+
+  .pdf-export-page .intern-layout.has-poster-media .intern-project-media {
+    aspect-ratio: 3 / 4;
+    width: auto;
+    height: min(68vh, 600px);
+    max-height: none;
+    margin: 0 auto 12px;
+  }
+
+  .pdf-export-page .intern-project-copy {
+    padding: 0 0 0 clamp(24px, 4vw, 56px);
+    border-top: 0;
+    border-left: 1px solid color-mix(in srgb, #f3efe5 24%, transparent);
+  }
+
+  .pdf-export-page .intern-layout.has-project-media .intern-project-copy {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .pdf-export-page .intern-focus {
+    margin-bottom: 18px;
+    font-size: clamp(22px, 3vw, 32px);
+    text-shadow: none;
+  }
+
+  .pdf-export-page .intern-points li {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    font-size: 14px;
+  }
+
+  .pdf-export-page .intern-layout.has-project-media .intern-focus {
+    margin-bottom: 10px;
+    font-size: clamp(20px, 2.2vw, 28px);
+  }
+
+  .pdf-export-page .intern-layout.has-project-media .intern-points li {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    font-size: 12px;
+    line-height: 1.55;
+  }
+
+  .pdf-export-page .editorial-media-label {
+    left: 8px;
+    bottom: 8px;
+    padding: 5px 7px;
+    font-size: 8px;
+  }
+
+  .pdf-export-page .editorial-media figcaption {
+    font-size: 8px;
+    letter-spacing: 0.08em;
+  }
+
+  .pdf-export-page .project-layout {
+    grid-template-columns: minmax(300px, 0.84fr) minmax(0, 1.16fr);
+    gap: 36px 56px;
+    align-items: center;
+    align-content: normal;
+  }
+
+  .pdf-export-page .project-media-wrap,
+  .pdf-export-page .project-media-wrap:has(.editorial-media--showcase),
+  .pdf-export-page .project-media-wrap:has(.editorial-media--phones) {
+    order: initial;
+    width: 100%;
+    height: min(62vh, 560px);
+    min-height: 360px;
+    max-height: none;
+    aspect-ratio: 16 / 10;
+    --overlap-fade: 0px;
+  }
+
+  .pdf-export-page .editorial-media--showcase .editorial-media-grid {
+    grid-template-rows: minmax(0, 1fr) minmax(0, 0.4fr);
+    gap: 10px;
+  }
+
+  .pdf-export-page .life-layout {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    align-content: normal;
+    gap: 32px 6vw;
+    height: calc(100% - 40px);
+  }
+
+  .pdf-export-page .life-copy h2 {
+    font-size: clamp(30px, 4.6vw, 54px);
+  }
+
+  .pdf-export-page .life-feature-text {
+    margin-top: 22px;
+    padding-top: 20px;
+  }
+
+  .pdf-export-page .life-feature-text p {
+    font-size: 14px;
+    line-height: 1.75;
+  }
+
+  .pdf-export-page .life-figure.is-portrait {
+    max-width: min(320px, 100%);
+    max-height: min(56vh, 460px);
+  }
+
+  .pdf-export-page .life-figure.is-landscape {
+    max-width: min(430px, 100%);
+    max-height: min(52vh, 420px);
+  }
+
+  .pdf-export-page .life-figure figcaption {
+    bottom: -26px;
+    font-size: 10px;
+  }
+
+  .pdf-export-page .life-photography-layout {
+    grid-template-columns: minmax(260px, 0.72fr) minmax(0, 1.45fr);
+    gap: 28px 4vw;
+    height: calc(100% - 38px);
+  }
+
+  .pdf-export-page .life-photography-copy h2 {
+    font-size: clamp(30px, 3.5vw, 48px);
+  }
+
+  .pdf-export-page .life-photography-description {
+    margin-top: 22px;
+    padding-top: 18px;
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  .pdf-export-page .life-photo-grid {
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    height: min(61vh, 620px);
+  }
+
+  .pdf-export-page .life-photo-tile {
+    aspect-ratio: auto;
   }
 }
