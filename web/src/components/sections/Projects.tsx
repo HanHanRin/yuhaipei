@@ -28,19 +28,19 @@ const PROJECTS: readonly Project[] = [
     note: "第 10 季数字金融训练营 · 优秀英才奖团队",
     body: "带领团队面向银行对公客户经理设计行业景气度分析工具，将多智能体流程产品化为「取数-归纳-打分-评级-生成研报」闭环；八个维度评分均可点击回溯原始证据。小组获优秀英才奖团队，个人获评委特别奖「小金喵」。",
     mediaVariant: "showcase",
-    mediaCredit: "决赛产品原型与展示海报 · 八维景气研究面板为核心",
+    mediaCredit: "决赛展示总海报与产品界面原型",
     media: [
+      {
+        src: "/portfolio/cmb/cmb-poster.webp",
+        alt: "招商银行金融训练营第 8 组产品展示总海报",
+        label: "总海报",
+        fit: "contain",
+      },
       {
         src: "/portfolio/cmb/cmb-eight-dim.webp",
         alt: "行业景气八维研究面板界面",
         label: "八维研究面板",
         objectPosition: "left top",
-      },
-      {
-        src: "/portfolio/cmb/cmb-poster.webp",
-        alt: "招商银行金融训练营第 8 组产品展示海报",
-        label: "总海报",
-        fit: "contain",
       },
       {
         src: "/portfolio/cmb/cmb-canvas.webp",
