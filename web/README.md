@@ -82,7 +82,7 @@ public/                 图片、简历 PDF、claude-pet.png、.nojekyll
 
 ## 本地 AI 分身
 
-右下角桌宠（临时借用 [cyj-personal-web](https://github.com/ChenYanjun-hub/cyj-personal-web) 外观）可回答履历/项目相关问题。
+右下角桌宠（临时借用 [cyj-personal-web](https://github.com/ChenYanjun-hub/cyj-personal-web) 外观）可回答履历/项目相关问题。文本对话默认走 DeepSeek **V4 Pro**（`deepseek-v4-pro`）。
 
 ```bash
 cp .env.example .env.local
@@ -90,7 +90,15 @@ cp .env.example .env.local
 npm run dev   # 不要设 STATIC_EXPORT；双击「双击预览作品集.command」同样可以
 ```
 
-密钥只存在服务端。GitHub Pages 构建会排除 `src/app/api`，线上只能看到桌宠 UI，聊天需本地或后续阿里云 Node 部署。
+密钥只存在服务端，不要提交 `.env.local`。GitHub Pages 构建会排除 `src/app/api`，那边只能看到桌宠 UI。
+
+**yuhaipei.cn（阿里云 Node）**要把同一份密钥放到服务器，聊天才能用：
+
+```bash
+# 在服务器上执行一次
+sudo bash /var/www/yuhaipei/web/deploy/setup-env.sh
+# 按提示粘贴 DEEPSEEK_API_KEY，脚本会写入 web/.env.local 并 reload PM2
+```
 
 ## 待办
 

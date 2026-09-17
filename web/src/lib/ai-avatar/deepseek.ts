@@ -5,17 +5,21 @@
  * 填好 DeepSeek 的 baseUrl / model 默认值即可。换别的文本模型只改这里。
  *
  * DeepSeek API 文档：https://api-docs.deepseek.com/api/create-chat-completion
+ *
+ * 作品集桌宠走对话路径：默认 deepseek-v4-pro，并关掉 thinking。
+ * V4 Pro 默认开启思考，思考 token 会计入 max_tokens；不关的话
+ * 用户会先空等，甚至 1500 token 被思考占满、最终没有可见回复。
  */
 
 import type { ChatMessage } from "./types";
 import { streamOpenAIChat } from "./openai-stream";
 
-const DEFAULT_MODEL = "deepseek-chat";
+const DEFAULT_MODEL = "deepseek-v4-pro";
 const DEFAULT_BASE_URL = "https://api.deepseek.com";
 
 export type DeepSeekOptions = {
   apiKey: string;
-  /** 默认 deepseek-chat；可换 deepseek-reasoner 等 */
+  /** 默认 deepseek-v4-pro；可用 DEEPSEEK_MODEL 覆盖 */
   model?: string;
   /** 默认 https://api.deepseek.com */
   baseUrl?: string;
@@ -40,5 +44,8 @@ export async function streamDeepSeek(
     temperature: 0.4,
     maxTokens: 1500,
     signal: opts.signal,
+    extraBody: {
+      thinking: { type: "disabled" },
+    },
   });
 }

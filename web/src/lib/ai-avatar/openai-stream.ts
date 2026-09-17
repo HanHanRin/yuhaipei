@@ -27,6 +27,8 @@ export type StreamChatOptions = {
   temperature?: number;
   maxTokens?: number;
   signal?: AbortSignal;
+  /** 上游专有字段（如 DeepSeek 的 thinking），合并进请求体 */
+  extraBody?: Record<string, unknown>;
 };
 
 /**
@@ -48,6 +50,7 @@ export async function streamOpenAIChat(
       stream: true,
       temperature: opts.temperature ?? 0.4,
       max_tokens: opts.maxTokens ?? 1500,
+      ...opts.extraBody,
     }),
     signal: opts.signal,
   });
