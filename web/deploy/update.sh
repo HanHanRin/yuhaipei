@@ -13,11 +13,39 @@ if [ "$(id -u)" -ne 0 ]; then
 fi
 
 cd "$APP_DIR"
-git fetch --depth 1 origin main
-git reset --hard origin/main
+
+# 国内服务器直连 GitHub 常 TLS 超时；先试 origin，失败再换镜像。
+fetch_ok=0
+if git fetch --depth 1 origin main; then
+  git reset --hard origin/main
+  fetch_ok=1
+else
+  echo "origin 拉取失败，尝试 GitHub 镜像…"
+  for mirror in \
+    "https://ghfast.top/https://github.com/HanHanRin/yuhaipei.git" \
+    "https://gitclone.com/github.com/HanHanRin/yuhaipei.git" \
+    "https://mirror.ghproxy.com/https://github.com/HanHanRin/yuhaipei.git"
+  do
+    echo "  → ${mirror}"
+    if git fetch --depth 1 "$mirror" main; then
+      git reset --hard FETCH_HEAD
+      fetch_ok=1
+      break
+    fi
+  done
+fi
+
+if [ "$fetch_ok" -ne 1 ]; then
+  echo "所有 Git 源均失败。可在本机执行 deploy/push-from-mac.sh 直传代码。" >&2
+  exit 1
+fi
 
 cd "${APP_DIR}/web"
-npm ci
+# npmmirror 偶发缺包时回退官方源
+if ! npm ci --registry https://registry.npmmirror.com; then
+  echo "镜像源缺包，回退官方 npm 源重试"
+  npm ci --registry https://registry.npmjs.org
+fi
 NEXT_PUBLIC_BASE_PATH="" npm run build
 
 # 若尚未放置密钥，聊天接口会提示未配置（见 .env.example）

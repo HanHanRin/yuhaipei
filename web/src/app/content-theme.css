@@ -1,0 +1,56 @@
+/* Cool editorial palette, scoped to content chapters so the cover stays intact. */
+.pf-shell:not([data-chapter="cover"]),
+.pdf-export-page:not([data-chapter="cover"]) {
+  --paper: #edf3f3;
+  --paper-deep: #d9e5e7;
+  --ink: #172f38;
+  --ink-2: #536b73;
+  --muted: #536b73;
+  --olive: #254b49;
+  --olive-light: #a8d4ce;
+  --rust: #327d87;
+  --rust-dark: #245d68;
+  --accent: var(--rust);
+  --warm: #edf5f4;
+  --content-white: #edf5f4;
+}
+
+.pf-shell[data-chapter="resume"],
+.pdf-export-page[data-chapter="resume"] { background: #edf3f3; }
+.pf-shell[data-chapter="intern"],
+.pdf-export-page[data-chapter="intern"] { background: #254b49; }
+.pf-shell[data-chapter="projects"],
+.pdf-export-page[data-chapter="projects"] { background: #294c59; }
+.pf-shell[data-chapter="life"],
+.pdf-export-page[data-chapter="life"] { background: #e3edef; }
+.pf-shell[data-chapter="closing"],
+.pdf-export-page[data-chapter="closing"] { background: #142b32; }
+
+.pf-shell:not([data-chapter="cover"]).theme-dark,
+.pdf-export-page:not([data-chapter="cover"]).theme-dark,
+:is(.pf-shell, .pdf-export-page):not([data-chapter="cover"]) :is(.intern-panel, .project-panel, .sec-closing) {
+  color: var(--content-white);
+}
+
+:is(.pf-shell, .pdf-export-page)[data-chapter="projects"] .editorial-media { --media-fade: #294c59; }
+:is(.pf-shell, .pdf-export-page)[data-chapter="intern"] .editorial-media { --media-fade: #254b49; }
+:is(.pf-shell, .pdf-export-page):not([data-chapter="cover"]) .editorial-media-item {
+  background: #edf3f3;
+  box-shadow: 0 18px 50px rgb(9 28 37 / 22%);
+}
+:is(.pf-shell, .pdf-export-page):not([data-chapter="cover"]) .editorial-media-label {
+  color: var(--content-white);
+  background: rgb(14 36 43 / 80%);
+}
+:is(.pf-shell, .pdf-export-page):not([data-chapter="cover"]) .editorial-media figcaption {
+  color: color-mix(in srgb, var(--content-white) 75%, transparent);
+}
+:is(.pf-shell, .pdf-export-page):not([data-chapter="cover"]) .intern-company-intro {
+  color: color-mix(in srgb, var(--content-white) 82%, transparent);
+}
+:is(.pf-shell, .pdf-export-page):not([data-chapter="cover"]) .closing-title span {
+  color: #a8d4ce;
+}
+:is(.pf-shell, .pdf-export-page):not([data-chapter="cover"]) :is(.intern-project-copy, .intern-points li, .project-tag, .closing-row) {
+  border-color: color-mix(in srgb, var(--content-white) 24%, transparent);
+}

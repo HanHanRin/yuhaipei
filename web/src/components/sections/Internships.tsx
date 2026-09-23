@@ -1,6 +1,7 @@
 "use client";
 
 import type { SlideMeta } from "@/components/portfolio/data";
+import { asset } from "@/components/portfolio/data";
 import EditorialMedia, {
   type EditorialMediaItem,
   type EditorialMediaVariant,
@@ -22,12 +23,64 @@ type Internship = {
   intro: string;
   role: string;
   dates: string;
+  /** 全页氛围背景（仅该公司页；需配合冷色暗罩保证文字可读） */
+  pageBackground?: string;
+  pageBackgroundCredit?: string;
   companyMedia?: readonly EditorialMediaItem[];
   companyMediaCredit?: string;
   projects: readonly InternshipProject[];
 };
 
 export const INTERNSHIPS: readonly Internship[] = [
+  {
+    id: "feishu-fde",
+    shortName: "飞书",
+    company: "字节跳动 · 飞书商业化",
+    blurb: "企业协作 · 飞书商业化",
+    intro:
+      "以 Forward-Deployment Engineer（FDE）身份深入客户业务，利用 AI 精准赋能，把业务难题解决方案化为可演示、可校验、可沉淀的 Agent 方案。",
+    role: "FDE 实习生",
+    dates: "2026.09 — 至今",
+    pageBackground: "/portfolio/feishu-fde/bytedance-hq-exterior.webp",
+    pageBackgroundCredit:
+      "背景 · 北京 1733 商业空间外景 · N509FZ / Wikimedia Commons · CC BY-SA 4.0",
+    projects: [
+      {
+        id: "shenxu",
+        title: "审序",
+        focus: "广告宣传材料合规 AI 检查助手「审序」",
+        points: [
+          "S · 某公司每天产出海量宣传材料，审核占用大量时间与人力",
+          "T · 打造多模态、可自动化的审核工具",
+          "A · 针对「人力在重复劳动中消耗太多、通用 AI 判不了公司内部信息正误」等痛点设计工作流：OCR 把图/页转成文本，规则做成 Skills 多维审核，并补上佐证上传与人工兜底",
+          "R · 工作流显著提升审核效率，平均审核时间大幅下降",
+        ],
+        mediaVariant: "dashboard",
+        mediaCredit: "审序逻辑图 · 材料审核页 / 数据看板 · Review Studio V0.7",
+        media: [
+          {
+            src: "/portfolio/feishu-fde/shenxu-flow.webp",
+            alt: "审序端到端审核逻辑图：进件、大模型审核与规则输出",
+            label: "逻辑主图",
+            objectPosition: "center center",
+            fit: "contain",
+          },
+          {
+            src: "/portfolio/feishu-fde/shenxu-review-ui.webp",
+            alt: "审序材料审核页：提交宣传材料与佐证",
+            label: "材料审核",
+            objectPosition: "left top",
+          },
+          {
+            src: "/portfolio/feishu-fde/shenxu-dashboard-ui.webp",
+            alt: "审序数据看板：审核记录与风险规则分布",
+            label: "数据看板",
+            objectPosition: "left top",
+          },
+        ],
+      },
+    ],
+  },
   {
     id: "azazie",
     shortName: "Azazie",
@@ -36,7 +89,7 @@ export const INTERNSHIPS: readonly Internship[] = [
     intro:
       "面向全球婚礼场景的 DTC 礼服电商，以按需定制、包容尺码和线上服务体验连接不同市场的消费者。",
     role: "AI 产品经理实习",
-    dates: "2026.05 — 至今",
+    dates: "2026.05 — 2026.08",
     companyMediaCredit: "品牌场景参考 · AZAZIE 官网截图 · 2026.08",
     companyMedia: [
       {
@@ -252,10 +305,28 @@ export default function Internships({
       >
         {INTERNSHIPS.map((item, companyIndex) => (
           <div
-            className="intern-company-page"
+            className={`intern-company-page${
+              item.pageBackground ? " has-page-bg" : ""
+            }`}
             key={item.id}
             aria-hidden={companyIndex !== company}
+            style={
+              item.pageBackground
+                ? {
+                    ["--intern-page-bg" as string]: `url(${asset(
+                      item.pageBackground,
+                    )})`,
+                  }
+                : undefined
+            }
           >
+            {item.pageBackground ? (
+              <div className="intern-page-bg" aria-hidden>
+                <span className="intern-page-bg-credit">
+                  {item.pageBackgroundCredit}
+                </span>
+              </div>
+            ) : null}
             <div
               className="intern-project-track"
               style={{

@@ -18,6 +18,7 @@ import {
   type ChatMessage,
 } from "@/lib/ai-avatar/types";
 import ClaudePet, { type PetState } from "./claude-pet";
+import ChatMarkdown from "./chat-markdown";
 
 type DisplayMessage = ChatMessage & { id: string; image?: string };
 
@@ -521,9 +522,22 @@ function AiAvatarFull() {
                   />
                 )}
                 {(m.content || (streaming && m.role === "assistant")) && (
-                  <div className="ai-avatar-msg-text">
-                    {m.content ||
-                      (streaming && m.role === "assistant" ? "…" : "")}
+                  <div
+                    className={
+                      m.role === "assistant"
+                        ? "ai-avatar-msg-text ai-avatar-msg-md"
+                        : "ai-avatar-msg-text"
+                    }
+                  >
+                    {m.role === "assistant" ? (
+                      m.content ? (
+                        <ChatMarkdown text={m.content} />
+                      ) : streaming ? (
+                        "…"
+                      ) : null
+                    ) : (
+                      m.content
+                    )}
                   </div>
                 )}
               </div>

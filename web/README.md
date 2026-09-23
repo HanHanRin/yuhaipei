@@ -95,10 +95,19 @@ npm run dev   # 不要设 STATIC_EXPORT；双击「双击预览作品集.command
 **yuhaipei.cn（阿里云 Node）**要把同一份密钥放到服务器，聊天才能用：
 
 ```bash
-# 在服务器上执行一次
+# 本机一键同步站点（推荐；国内服务器常连不上 GitHub）
+bash web/deploy/push-from-mac.sh
+# 或在 Finder 双击 web/deploy/一键同步到阿里云.command
+
+# 在服务器上写入 DeepSeek 密钥
 sudo bash /var/www/yuhaipei/web/deploy/setup-env.sh
-# 按提示粘贴 DEEPSEEK_API_KEY，脚本会写入 web/.env.local 并 reload PM2
 ```
+
+Cursor 里也可对 Agent 说「部署到阿里云」，会走项目 skill `deploy-yuhaipei-aliyun`。
+
+### AI 分身知识库
+
+知识在 `src/lib/ai-avatar/knowledge/`：路由 skill + `docs/*.md`。提问时按意图注入相关文档。维护说明见该目录 `README.md`。
 
 ## 待办
 

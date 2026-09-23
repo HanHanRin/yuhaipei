@@ -8,7 +8,7 @@ import {
 } from "react";
 import BottomGuide from "./BottomGuide";
 import { chapters, clamp } from "./data";
-import Cover from "@/components/sections/Cover";
+import BotanicalCover from "@/components/sections/BotanicalCover";
 import Resume from "@/components/sections/Resume";
 import Internships, {
   INTERNSHIPS,
@@ -257,9 +257,16 @@ export default function PortfolioShell() {
       const absY = Math.abs(event.deltaY);
       if (absX < 1 && absY < 1) return;
 
-      // 主轴：横向优先于纵向（便于在章内扫子页）
-      if (absX > absY && absX > 8) {
+      // 只要有明显横向分量就拦截浏览器默认（后退/前进手势），
+      // 再按主轴决定是切子页还是切章。
+      const isPrimarilyHorizontal = absX > absY && absX > 4;
+      const hasHorizontalIntent = absX > 8;
+
+      if (isPrimarilyHorizontal || hasHorizontalIntent) {
         event.preventDefault();
+      }
+
+      if (isPrimarilyHorizontal) {
         if (navLockRef.current) return;
         consumeWheelAxis(
           wheelHorizRef.current,
@@ -283,6 +290,7 @@ export default function PortfolioShell() {
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (inAiAvatar(event.target)) return;
+      if (event.target instanceof Element && event.target.closest("button, a, input, textarea, select, [contenteditable]")) return;
       if (busyRef.current) return;
 
       if (["ArrowDown", "PageDown"].includes(event.key)) {
@@ -395,7 +403,7 @@ export default function PortfolioShell() {
           aria-hidden={page !== 0}
           data-active={page === 0}
         >
-          <Cover onEnterResume={() => goPage(1)} />
+          <BotanicalCover onNavigate={goPage} active={page === 0} />
         </section>
         <section
           className={`pf-chapter${page === 1 ? " is-active" : ""}`}

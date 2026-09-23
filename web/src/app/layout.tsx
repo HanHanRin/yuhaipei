@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import AiAvatar from "@/components/ai-avatar/ai-avatar";
 import "./globals.css";
+import "./content-theme.css";
 
 // metadata 里的 icons 不会自动带 basePath，部署到子路径时要自己拼。
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";

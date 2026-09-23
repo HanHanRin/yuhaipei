@@ -32,7 +32,7 @@ export const chapters: ChapterMeta[] = [
     id: "resume",
     label: "简历",
     short: "01",
-    color: "#fbfaf6",
+    color: "#edf3f3",
     theme: "light",
     slides: [
       { id: "portrait", title: "身份" },
@@ -43,9 +43,10 @@ export const chapters: ChapterMeta[] = [
     id: "intern",
     label: "实习",
     short: "02",
-    color: "#44500f",
+    color: "#254b49",
     theme: "dark",
     slides: [
+      { id: "feishu-fde", title: "飞书" },
       { id: "azazie", title: "Azazie" },
       { id: "zhujie", title: "逐界" },
       { id: "fudan", title: "复旦" },
@@ -56,7 +57,7 @@ export const chapters: ChapterMeta[] = [
     id: "projects",
     label: "项目",
     short: "03",
-    color: "#b85132",
+    color: "#294c59",
     theme: "dark",
     slides: [
       { id: "cmb", title: "招行景气度" },
@@ -68,7 +69,7 @@ export const chapters: ChapterMeta[] = [
     id: "life",
     label: "爱好",
     short: "04",
-    color: "#eee7d8",
+    color: "#e3edef",
     theme: "light",
     slides: [
       { id: "books", title: "书" },
@@ -81,7 +82,7 @@ export const chapters: ChapterMeta[] = [
     id: "closing",
     label: "总结",
     short: "05",
-    color: "#14140f",
+    color: "#142b32",
     theme: "dark",
     slides: [{ id: "next", title: "下一步" }],
   },

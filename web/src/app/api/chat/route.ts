@@ -15,7 +15,10 @@
  */
 
 import { NextResponse } from "next/server";
-import { SYSTEM_PROMPT } from "@/lib/ai-avatar/prompt";
+import {
+  buildFullKnowledgePrompt,
+  buildKnowledgePrompt,
+} from "@/lib/ai-avatar/prompt";
 import { streamDeepSeek } from "@/lib/ai-avatar/deepseek";
 import { streamQwenVL } from "@/lib/ai-avatar/qwen-vl";
 import {
@@ -157,8 +160,10 @@ export async function POST(req: Request) {
       const lastUserText =
         [...validation.messages].reverse().find((m) => m.role === "user")
           ?.content ?? "";
+      // 视觉 JD 匹配需要较全档案
+      const { systemPrompt: visionSystem } = buildFullKnowledgePrompt();
       textStream = await streamQwenVL(
-        SYSTEM_PROMPT,
+        visionSystem,
         validation.messages,
         imageDataUrl,
         lastUserText,
@@ -170,7 +175,7 @@ export async function POST(req: Request) {
         },
       );
     } else {
-      // 文本路径 · DeepSeek
+      // 文本路径 · DeepSeek：按意图路由知识库文档
       const apiKey = process.env.DEEPSEEK_API_KEY;
       if (!apiKey) {
         return errorJson(
@@ -179,8 +184,12 @@ export async function POST(req: Request) {
           500,
         );
       }
+      const lastUserText =
+        [...validation.messages].reverse().find((m) => m.role === "user")
+          ?.content ?? "";
+      const { systemPrompt } = buildKnowledgePrompt(lastUserText);
       const fullMessages: ChatMessage[] = [
-        { role: "system", content: SYSTEM_PROMPT },
+        { role: "system", content: systemPrompt },
         ...validation.messages,
       ];
       textStream = await streamDeepSeek(fullMessages, {
