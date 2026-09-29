@@ -1,0 +1,10 @@
+{
+  "Version": 3,
+  "FileReferences": {
+    "Moc": "naiwa.moc3",
+    "Textures": ["textures/texture_00.png"],
+    "Physics": "naiwa.physics3.json",
+    "DisplayInfo": "naiwa.cdi3.json"
+  },
+  "Groups": [{ "Target": "Parameter", "Name": "EyeBlink", "Ids": [] }]
+}
